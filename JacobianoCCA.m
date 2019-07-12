@@ -1,3 +1,4 @@
+%Funcion Jacobiano Final
 clc; clear
 close all
 f = (1E-1:1.5:1E1);            %Rango de frecuencia
