@@ -1,36 +1,28 @@
-%function [ M ] = Fun_M( file, NoEst, NoReg, LonReg, Dt, W, Trsl )
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-%   Pograma CCA mejorado para n archivos y ventaneado                                   %
-%   El alalpha0ritmo o flujo seguido para programarlo fue seguir el sugerido por:       %
-%   Ikuo Cho, Taku Tada en el articulo: A new method to dtermine phase velocities of    % 
-%                                       Rayleigh waves from microseismis                %
-%                                                                                       %  
-%                                                                                       %
-%                                                                                       %
-% Creado por FCH 2009 y modificado por MAOG 2019                                        %  
-%                                                                                       %  
-%                                                                                       %   
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+function [ M ] = Fun_M( file, NoEst, NoReg, LonReg, Dt, W, Tras )
+% 
+% Fun_M     Pograma CCA mejorado para n archivos y ventaneado. El algoritmo                                   %
+%           o flujo seguido para programarlo fue el sugerido por:          
+%           Cho et al,(2004): A new method to dtermine phase velocities of 
+%           Rayleigh waves from microseismis                
+%                                                                          
+% Creado por FCH 2009 y modificado por MAOG 2019                                                                                                                  %  
+%                                                                          
+% % % % % % % % % % % % Lista de Variables % % % % % % % % % % % % %
+%
+%       file  =    Lectura del archivo .dat que se graba en campo
+%      NoEst  =    Numero de estaciones
+%      NoReg  =    Numero de registos de ruido sismico
+%      LonReg =    Longitud del registro de ruido en segundos
+%          Dt =    Muestreo en segundos
+%           W =    Ancho de la ventana en segundos
+%        Tras =    Porcentaje del traslape
+% 
 
-%   Detailed explanation goes here
-
-
-clc
-clear ; close all
-
-file=load ('registros.dat');
-NoEst=input('Numero de estaciones en el arreglo circular: ');
-NoReg=input('Numero de registros de ruido: ');
-LonReg=input('Longitud de registro (seg): ');
-Dt=input('Muestreo: ');
-W=input('Tamanio de la ventana (seg): ');
-Trsl=input('Traslape de ventanas 1(0%) o 2(50%): ');
-
-pi=3.141592654;
+pi=4*atan(1);
 nV=(LonReg*NoReg)/W; %numero de ventanas totales
 n=W/Dt; %numero de datos por ventana
 
-if Trsl == 2;
+if Tras == 2;
     nV=(nV*2)-1;
 end;
 
@@ -48,7 +40,7 @@ for h=1:nV;                     %controla el numero de ventanas
      alpha0n(jj+1,h)=alpha0(jj+1);   %aqui es guardar las series de tiempo obtenidas alpha0 y alpha1 ventaneadas en columnas 
      alpha1n(jj+1,h)=alpha1(jj+1);
     end;
-    if Trsl == 2;
+    if Tras == 2;
         l=l+n/2;
     else;
         l=l+n;
@@ -104,8 +96,12 @@ PromSuavisadoPSD_G0=SumSuavisadoPSD_G0./nV;
 PromSuavisadoPSD_G1=SumSuavisadoPSD_G1./nV;
 M_smooth= PromSuavisadoPSD_G0./PromPSD_G1;
 
-% Estas graficas ya estan en el programa InversionCCA.m
+matrix(:)=M;
+M=matrix;
+%save sal75.dat matrix -ascii
 
+
+ % % % % % % % Estas graficas ya estan en el programa InversionCCA.m % % % % % % %
 % %Graficado del cociente G0/G1 con y sin suavizado
 % figure('name','Funcion M')
 % loglog (f,M,'b',f,M_smooth,'r');title('M[rk(w)]')
@@ -117,13 +113,8 @@ M_smooth= PromSuavisadoPSD_G0./PromPSD_G1;
 % 
 % figure('name','Funcion M suavizada')
 % loglog(f,M_smooth,'r')
-%
-%FIN DE LAS GRAFICAs comentadas
+%%FIN DE LAS GRAFICAs comentadas
 
-%matrix(:,1)=f;
-matrix(:)=M;
+end
 
-M=matrix;
-
-%save sal75.dat matrix -ascii
 
