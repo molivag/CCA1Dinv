@@ -4,7 +4,7 @@
 %velocities of Rayleigh waves from microseismis
 %clear all
 cd('K:\Metodo CCA\Datos Tecoman 2008\ruido_circulo_GEODE')
-s=load ('todas.dat');
+s=load ('registros.dat');
 NE=input('Numero de estaciones en el arreglo circular: ')
 NReg=input('Numero de registros de ruido: ')
 L=input('Longitud de registro en segundos: ') 
