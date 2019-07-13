@@ -2,8 +2,13 @@
 %El algoritmo o flujo seguido para programarlo fue seguir el sugerido por:
 %Ikuo Cho, Taku Tada en el articulo: a new method to dtermine phase
 %velocities of Rayleigh waves from microseismis
-%clear all
-cd('K:\Metodo CCA\Datos Tecoman 2008\ruido_circulo_GEODE')
+
+%si se escoge la opcion de traslape al 50% se debe bajar el muestreo de
+%0.008 a 0.004
+
+clear all
+
+%cd('K:\Metodo CCA\Datos Tecoman 2008\ruido_circulo_GEODE')
 s=load ('registros.dat');
 NE=input('Numero de estaciones en el arreglo circular: ')
 NReg=input('Numero de registros de ruido: ')
@@ -12,16 +17,17 @@ dt=input('Muestreo: ')
 V=input('Tama?o de la ventana en segundos: ')
 Tras=input('Traslape entre ventanas 1(0%) o 2(50%): ')
 pi=3.141592654;
+
 nV=(L*NReg)/V; %numero de ventanas totales
 n=V/dt;        %numero de datos por ventana
-if Tras == 2;
+if Tras == 2
     nV=(nV*2)-1;
-end;
+end
 
 
 dteta=2*pi/NE; %delta de teta
 l=1; %Variable que ontrola el salto de lineas en los registros
-for h=1:nV; %controla el numero de ventanas
+for h=1:nV %controla el numero de ventanas
     for jj=0:n-1;%controla el numero de datos por ventana 
         Go(jj+1)=0; G1(jj+1)=0;
         for k=1: NE;%controla el numero de estaciones
@@ -31,18 +37,18 @@ for h=1:nV; %controla el numero de ventanas
         Gon(jj+1,h)=Go(jj+1);%aqui es guardar las series obtenidas Go y G1 ventaneadas en columnas 
         G1n(jj+1,h)=G1(jj+1);
    end;
-       if Tras == 2;
+       if Tras == 2
             l=l+n/2;
-        else;
+       else
             l=l+n;
-        end;
-end;    
+       end
+end
     
 %Obteniendo y aplico la Ventana de Hanning a cada ventana y lo guardo en
 %matriz
 windowHanning = window(@hann,n).';
 
-for ii=1:nV;
+for ii=1:nV
     GonV(:,ii)=windowHanning'.*Gon(:,ii);
     G1nV(:,ii)=windowHanning'.*G1n(:,ii);
 end;
@@ -51,7 +57,7 @@ end;
 windowParzen=window(@parzenwin,n).';
 %Se obtiene la norma de la ventana de parzen
 FTwindowParzen=fft(windowParzen,n);
-AbsParzen=abs(FTwindowParzen)
+AbsParzen=abs(FTwindowParzen);
 
 
 %Calculo de la densidad espectral de energia para mabas series G0 y G1
@@ -60,7 +66,7 @@ AbsParzen=abs(FTwindowParzen)
 %calculo: por ejemplo FFTGo(:,:)=fft
 fs=1/dt;
 f = (0:n-1)*(fs/n);     % Frequency range
-for jj=1:nV;
+for jj=1:nV
     FFTGo(:,jj) = fft(GonV(:,jj),n);           %Se calculan las FFT de cada ventana
     FFTG1(:,jj) = fft(G1nV(:,jj),n);          
     powerGo(:,jj) =abs(FFTGo(:,jj));            %Se calculan las |FFT| de cada ventana
@@ -93,11 +99,12 @@ PromSuavisadoPSDG1=SumSuavisadoPSDG1./nV;
 %PromG1=SumG1./nV;
 
 %Graficado del cociente Go/G1
-loglog (f,PromPSDGo./PromPSDG1,f,PromSuavisadoPSDGo./PromSuavisadoPSDG1,'r'); grid;title('M[rk(w)]');xlabel('f'); ylabel('M')
 figure(1)
-loglog(f,PromPSDGo./PromPSDG1)
+loglog (f,PromPSDGo./PromPSDG1,'b',f, PromSuavisadoPSDGo./PromSuavisadoPSDG1,'r'); grid;title('M[rk(w)]');xlabel('f'); ylabel('M')
 figure(2)
-loglog(f,PromSuavisadoPSDGo./PromSuavisadoPSDG1)
+loglog(f,PromPSDGo./PromPSDG1,'b')
+figure(3)
+loglog(f,PromSuavisadoPSDGo./PromSuavisadoPSDG1,'r')
 matrix(:,1)=f;
 matrix(:,2)=PromPSDGo./PromPSDG1;
-save sal75.dat matrix -ascii
+%save sal75.dat matrix -ascii
