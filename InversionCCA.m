@@ -1,20 +1,35 @@
 clear; close all;  clc
 
-f = (1E-1:0.1:1E1);            %Rango de frecuencia
-r = 3; %*ones(1,length(w));   %Radio del arreglo
+f = (1E-1:0.1:1.25E1);      %Ancho de banda
+r = 3;                      %Radio del arreglo circular
 
-% 
-% file=load ('registros.dat');
-% NoEst=input('Numero de estaciones en el arreglo circular: ');
-% NoReg=input('Numero de registros de ruido: ');
-% LonReg=input('Longitud de registro (seg): ');
-% Dt=input('Muestreo: ');
-% W=input('Tamanio de la ventana (seg): ');
-% Trsl=input('Traslape de ventanas 1(0%) o 2(50%): ');
-% 
+% % % % % % % % % % PARAMETROS PARA DATOS OBSERVADOS % % % % % % %  % % % %
+file=load ('registros.dat'); %registros.dat antes lamado todas.dat
+%NoEst=input('Numero de estaciones en el arreglo circular: ');
+NoEst= 20
+%NoReg=input('Numero de registros de ruido: ');
+NoReg= 18
+%LonReg=input('Longitud de registro (seg): ');
+LonReg= 65
+%Dt=input('Muestreo: ');
+Dt= 0.008
+%W=input('Tamanio de la ventana (seg): ');
+W= 1
+%Tras=input('Traslape de ventanas 1(0%) o 2(50%): ');
+Tras= 1
+
+        nV = (LonReg*NoReg)/W;      %numero de ventanas totales
+n_per_wind = W/Dt;                  %datos por ventana
+        fs = 1/Dt;                  %
+%        f = (0:n_per_wind-1)*(fs/n_per_wind); % Frequency range
 
 
-A=115; B=0.9;      %Expresion que define la forma de la curva
+Datos = Fun_M( file, NoEst, NoReg, LonReg, Dt, W, Tras, nV, n_per_wind );
+
+
+% % % % % % % % % % % % % % MODELO DIRECTO % % % % % % % % % % % % % % %  % 
+
+A=115; B=0.9;         %Expresion que define la forma de la curva
 Vp_ini = A.*f.^(-B);  %de la velocidad de fase Vp
   
 % V0 = 1000;   %m/s  OPRTIMO 1
@@ -28,15 +43,11 @@ PAR= length(Vp_ini);
 per=0.0025;
 h = Vp_ini*per;
 
-% % % % % % % % % % M O D E L O   D I R E C T O % % % % % % %  % % % % % %
 FM = DirectoCCA( f, r, Vp_ini, OBS )'; %transpuesto solo para visualizacion
 
-
-% % % % % % % % % % I N V E R S I O N  I T E R A T I V A % % % % % % %  % %
-
+% % % % % % % % % % % % % % PROCESO DE INVERSION % % % % % % %  % % % % % %
+% 
 x=[1:length(Vp_ini)];
-
-
        %n x %p
 Z=zeros(OBS,PAR);
 
@@ -86,30 +97,35 @@ close all
 
     
     
+Matriz= Z
+Inversa = inv(Z'*Z)
+Determinante= det(Z'*Z)
 
 
-
-
-% % % % % % % % % % % % % % GRAFICAS DEL PROGRAMA FUN M % % % % % % % % % % % % % % % % 
+% % % % % % % % % % % GRAFICAS DE LA FUNCION Fun_M.m % % % % % % % % % % % % % % % % 
 %Graficado del cociente G0/G1 con y sin suavizado
-figure('name','Funcion M')
-loglog (f,M,'b',f,M_smooth,'r');title('M[rk(w)]')
-legend('M','M_{Smooth}')
-grid on; xlabel('f'); ylabel('M')
+% figure('name','Funcion M')
+% loglog (f,Datos,'b',f,M_smooth,'r','LineWidth',1)
+% title('Espectro de Densidad de Potencia observado','FontSize', 12,'interpreter','latex')
+% grid on, legend('M','M_{Smooth}')
+% xlabel('Frecuencia (Hz)','FontSize', 11,'interpreter','latex')
+% ylabel('$M \left[rk(w) \rigth]$','FontSize', 14,'FontWeight','bold','Rotation',0,'interpreter','latex')
 
 figure('name','Funcion M')
-loglog(f,M,'b'); grid on
+loglog(f,Datos,'b'); grid on
+title('Funcion M','FontSize', 12,'interpreter','latex')
+xlabel('Frecuencia (Hz)','FontSize', 11,'interpreter','latex')
+ylabel('$ M \left[rk(w) \right]$','FontSize', 14,'Rotation',90,'interpreter','latex')
 
-figure('name','Funcion M suavizada')
-loglog(f,M_smooth,'r')
+% figure('name','Funcion M suavizada')
+% loglog(f,M_smooth,'r')
+% title('Funcion M suavizada','FontSize', 12,'interpreter','latex')
+% xlabel('Frecuencia (Hz)','FontSize', 11,'interpreter','latex')
+% ylabel('$M \left[rk(w) \rigth]$','FontSize', 14,'FontWeight')
+% % % % % % % % % % % FIN GRAFICAS DE LA FUNCION Fun_M.m % % % % % % % % % % % % % 
 
-% % % % % % % % % % % % % % FIN GRAFICAS DEL PROGRAMA FUN M % % % % % % % % % % % % % %
 
-
-
-
-
-% % % % % % % % % % % % % F I G U R A S % % % % % % %  % % % % % % % % % % 
+% % % % % % % % % % % GRAFICAS DE LA FUNCION DirectoCCA.m % % % % % % % % % % % % %
 figure('name','Modelo Directo PSD')
 subplot(2,4,[2 3])
 semilogx(f,Vp_ini,'k','LineWidth',1);grid on;
@@ -129,4 +145,4 @@ grid on;	%legend('J_0/J_1')
 title(['Modelado directo del cociente espectral de densidad de potencia para $r$ =' ' ',num2str(r)],'FontSize', 12,'interpreter','latex')
 xlabel('Frecuencia (Hz)','FontSize', 11,'interpreter','latex')
 ylabel('$\displaystyle \left[\frac{J_{_0}}{J_{_1} }\right]^2 $','FontSize', 14,'Rotation',0,'interpreter','latex')
-
+% % % % % % % % % % % FIN GRAFICAS DE LA FUNCION DirectoCCA.m % % % % % % % % % % %
