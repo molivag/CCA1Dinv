@@ -17,9 +17,9 @@ Tras= 1
 
       r = 15;                    %Radio del arreglo circular
      nV = (LonReg*NoReg)/W;      %numero de ventanas totales
-n_x_ven = W/Dt;                  %datos por ventana
+n_x_ven = W/Dt                   %datos por ventana             RENOMBRAR POR Nven al parecer siempre ser? igual a las observaciones por lo que se puede quitar y ahorrar una variable
      fs = 1/Dt;                  %Frecuencia Maxima
-     ds = 1/(n_x_ven*Dt);         %Muestreo frec
+     ds = 1/(n_x_ven*Dt);        %Muestreo frec
       f = (0:ds:n_x_ven-1)*(fs/n_x_ven); % Frequency range
 %      f = (1E-1:0.9:1.25E1);    %Ancho de banda
 
@@ -28,23 +28,31 @@ Datos = Fun_M( file, NoEst, NoReg, LonReg, Dt, W, Tras, nV, n_x_ven );
 
 % % % % % % % % % % % % % % MODELO DIRECTO % % % % % % % % % % % % % % %  % 
 
-A=1000; B=0.9;         %Expresion que define la forma de la curva
-Vp = A.*f.^(-B);       %de la velocidad de fase Vp
-  
-OBS= length(f);
-PAR= length(Vp);
-
-per=0.0025;
-h = Vp*per;
-
+A=1000; B=0.9;          %Expresion que define la forma de la curva
+Vp = A.*f.^(-B);        %de la velocidad de fase Vp
+disp('Tamanio de la matriz')
+OBS = length(Datos)     %n
+PAR = length(Vp);       %p
+Z=zeros(OBS,PAR);
+dim=size(Z)
+Elementos=OBS*PAR
+per=0.0025;             %Perturbacion en el Jacobiano
 FM = DirectoCCA( f, r, Vp, OBS )'; %transpuesto solo para visualizacion
 
-% % % % % % % % % % % % % % PROCESO DE INVERSION % % % % % % %  % % % % % %
+% % % % % % % % % % % % % % MODELO INVERSION % % % % % % %  % % % % % %
 
 
 
 
 
+
+
+
+
+disp('Verificaci?n de la estabilidad de la matriz ZtZ')
+INV_ZtZ=inv(Z'*Z);
+Determinante=det(Z'*Z)
+Norma=norm(INV_ZtZ)
 
 
 
@@ -70,6 +78,20 @@ FM = DirectoCCA( f, r, Vp, OBS )'; %transpuesto solo para visualizacion
 % xlabel('Frecuencia (Hz)','FontSize', 11,'interpreter','latex')
 % ylabel('$M \left[rk(w) \rigth]$','FontSize', 14,'FontWeight')
 % % % % % % % % % % % FIN GRAFICAS DE LA FUNCION Fun_M.m % % % % % % % % % % % % % 
+
+
+
+
+
+% % % % % % % % % % % GRAFICAS DEL JACOBIANO % % % % % % % % % % % % % % % % 
+
+% figure('name','Modelo Directo')
+% loglog(f,Resp,'k'); grid on; title('Modelo Directo')
+%
+% figure('name','Jacobisno')
+% plot(Z); title('Matriz de Sensibilidad Z')
+
+
 
 
 % % % % % % % % % % % GRAFICAS DE LA FUNCION DirectoCCA.m % % % % % % % % % % % % %

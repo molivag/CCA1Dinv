@@ -23,6 +23,7 @@ Z=zeros(OBS,PAR);
 dim=size(Z)
 Elementos=OBS*PAR
 
+
 per=0.075;
 h = Vp*per; %Esto es para indicar un 0.25% de VP como perturbacion
 

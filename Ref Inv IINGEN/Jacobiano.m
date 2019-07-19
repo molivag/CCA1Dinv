@@ -1,4 +1,4 @@
-% function [ J ] = Jacobiano( rho, h, Resp, ab, e, capas, m )
+ function [ J ] = Jacobiano( rho, h, Resp, ab, e, capas, m )
 % %MATRIZ JACOBIANO: Esta funci?n calcula la matriz jacobiano para un modelo 
 % %                  de 5 capas y 20 mediciones, no esta dise?ado para el
 % %                  caso general pero puede modificarse empleando ciclos for.
@@ -186,8 +186,5 @@ end
 J= [jaco1 jaco2 jaco3 jaco4 jaco5]
 
 
+ end
 
-
-
-
-Z-J
