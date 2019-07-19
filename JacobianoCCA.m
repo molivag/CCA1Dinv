@@ -1,7 +1,7 @@
 %Funcion Jacobiano Final
 clc; clear; close all
 
-f = (1E-1:1.0:1E1);            %Rango de frecuencia
+f = (1E-1:2.0:1E1);            %Rango de frecuencia
 r=15;
 
 % % % % % % % % % % % % % % % Vp Metodo 1 % % % % % % % % % % % % % % % % %
@@ -22,10 +22,9 @@ PAR = length(Vp);    %p
 Z=zeros(OBS,PAR);
 dim=size(Z)
 Elementos=OBS*PAR
-x=(1:length(Vp));
 
 per=0.075;
-h = Vp*per %Esto es para indicar un 0.25% de VP como perturbacion
+h = Vp*per; %Esto es para indicar un 0.25% de VP como perturbacion
 
 Resp=DirectoCCA(f, r, Vp, OBS)';
 
@@ -42,7 +41,7 @@ disp('* * * * * * * * * L a  m a t r i z   d e   J a  c o b i a n o * * * * * * 
             Fper_1=DirectoCCA(f, r, Vp1, OBS)';                      %respuesta f(x+h)
             Fper_1_2h=DirectoCCA(f, r, Vp2, OBS)';                  %respuesta f(x+2h)
             for i=1:OBS
-                Z(i,j)=(-3*Resp(i) + 4*Fper_1(i) - Fper_1_2h(i))/(2*h(j))
+                Z(i,j)=(-3*Resp(i) + 4*Fper_1(i) - Fper_1_2h(i))/(2*h(j));
             end
 
 
