@@ -1,4 +1,4 @@
-function [ M ] = Fun_M( file, NoEst, NoReg, LonReg, Dt, W, Tras, nV, n_per_wind )
+function [ M ] = Observados( file, NoEst, W, Tras, nV, nXven )
 
 % Fun_M     Pograma CCA mejorado para n archivos y ventaneado. El algoritmo                                   %
 %           o flujo seguido para programarlo fue el sugerido por:          
@@ -18,10 +18,29 @@ function [ M ] = Fun_M( file, NoEst, NoReg, LonReg, Dt, W, Tras, nV, n_per_wind 
 %        Tras =    Porcentaje del traslape
 % 
 
+% clc; clear all
+% file=load ('registros.dat');
+% NoEst=input('Numero de estaciones en el arreglo circular: ')
+% NoReg=input('Numero de registros de ruido: ')
+% LonReg=input('Longitud de registro en segundos: ') 
+% Dt=input('Muestreo: ')
+% W=input('Tama?o de la ventana en segundos: ')
+% Tras=input('Traslape entre ventanas 1(0%) o 2(50%): ')
+% 
+% 
+% 
+% 
+%      nV = (LonReg*NoReg)/W;      %numero de ventanas totales
+%   nXven = W/Dt                   %datos por ventana             RENOMBRAR POR Nven al parecer siempre ser? igual a las observaciones por lo que se puede quitar y ahorrar una variable
+%      fs = 1/Dt;                  %Frecuencia Maxima
+%      ds = 1/(nXven*Dt);          %Muestreo frec
+%       f = (0:ds:nXven-1)*(fs/nXven); % Frequency range
+
 pi=4*atan(1);
 
 %si se escoge la opcion de traslape al 50% se debe bajar el muestreo de
 %0.008 a 0.004
+
 if Tras == 2     
     nV=(nV*2)-1;
 end
@@ -30,7 +49,7 @@ end
 dteta=2*pi/NoEst;                  %delta de teta
 l=1;                            %Variable que ontrola el salto de lineas en los registros
 for h=1:nV                    %controla el numero de ventanas
-    for jj=0:n_per_wind-1               %controla el numero de datos por ventana 
+    for jj=0:nXven-1               %controla el numero de datos por ventana 
      alpha0(jj+1)=0;            %Series de tiempo 
      alpha1(jj+1)=0;
         for k=1: NoEst            %controla el numero de estaciones
@@ -41,14 +60,14 @@ for h=1:nV                    %controla el numero de ventanas
      alpha1n(jj+1,h)=alpha1(jj+1);
     end
     if Tras == 2
-        l=l+n_per_wind/2;
+        l=l+nXven/2;
     else
-        l=l+n_per_wind;
+        l=l+nXven;
     end
 end    
     
 %Obteniendo y aplico la Ventana de Hanning a cada ventana y lo guardo en matriz
-windowHanning = window(@hann,n_per_wind).';
+windowHanning = window(@hann,nXven).';
 
 for ii=1:nV
     alpha0nV(:,ii)=windowHanning'.*alpha0n(:,ii);
@@ -56,9 +75,9 @@ for ii=1:nV
 end
 
 %Se obtiene la ventana de parzen en tiempo
-windowParzen=window(@parzenwin,n_per_wind).';
+windowParzen=window(@parzenwin,nXven).';
 %Se obtiene la norma de la ventana de parzen
-FTwindowParzen=fft(windowParzen,n_per_wind);
+FTwindowParzen=fft(windowParzen,nXven);
 AbsParzen=abs(FTwindowParzen);
 
 
@@ -68,8 +87,8 @@ AbsParzen=abs(FTwindowParzen);
 % fs=1/Dt;
 % f = (0:n-1)*(fs/n);     % Frequency range
 for jj=1:nV
-   G0(:,jj) = fft(alpha0nV(:,jj),n_per_wind);                %Se calculan las FFT de cada ventana claculando primero la densidad espectral de potencia
-   G1(:,jj) = fft(alpha1nV(:,jj),n_per_wind);                % G0 y G1, 
+   G0(:,jj) = fft(alpha0nV(:,jj),nXven);                %Se calculan las FFT de cada ventana claculando primero la densidad espectral de potencia
+   G1(:,jj) = fft(alpha1nV(:,jj),nXven);                % G0 y G1, 
    absG0(:,jj) =abs(G0(:,jj));                      % despues se calcula |G0| y |G1| de cada ventana
    absG1(:,jj) =abs(G1(:,jj));
    PSD_G0(:,jj)=(absG0(:,jj).^2)./W;                %Se calculan la densidad espectral de potencia |FFT|^2/V, la cual es 
@@ -85,8 +104,8 @@ PromPSD_G0=SumPSD_G0./nV;
 PromPSD_G1=SumPSD_G1./nV;
 
 
-%Calculamos la funci??n M que es la representaci??n de los datos observados 
-M= PromPSD_G0./PromPSD_G1;
+%Calculamos la funcion M que es la representaci??n de los datos observados 
+M = PromPSD_G0./PromPSD_G1;
 
 
 %Promedio de las densidades espectrales de potencia suavisadas con Parzen
