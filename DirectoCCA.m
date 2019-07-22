@@ -1,4 +1,4 @@
-function [ TPSD ] = DirectoCCA( f, r, Vp, OBS )
+function [ TPSD ] = DirectoCCA( f, r, Vp )
 
 %DirectoCC  Resuelve el proble directo de la propagacion de ondas Rayleigh 
 %           que se registran en un arreglo circular sin centro midiendoi 
@@ -20,12 +20,13 @@ function [ TPSD ] = DirectoCCA( f, r, Vp, OBS )
 %      OBS =    Numero de datos observados 
 
 
+muestras = length(f);
 
 %Numero de onda K
-kr(OBS)=0; %inicializacion del vector de kr, que es el produucto del
+kr(muestras)=0; %inicializacion del vector de kr, que es el produucto del
            % numero de onda y el radio del arreglo circular
 
-for i=1:OBS
+for i=1:muestras
 kr(i) = 2*pi*r*(f(i)./Vp(i)); %se calcula el numero de onda a partir de
 end                           %la velocidad de fase propuesta (Vp)
 
@@ -33,16 +34,16 @@ end                           %la velocidad de fase propuesta (Vp)
                               
 %Calculo de las funciones de Bessel de primera especie, Jn(z) para cada 
 %frecuencia del ancho de banda, (f).
-J0T(OBS)=0;
-J1T(OBS)=0;
-for i=1:OBS
+J0T(muestras)=0;
+J1T(muestras)=0;
+for i=1:muestras
 J0T(i) = (besselj(0,kr(i))).^2;
 J1T(i) = (besselj(1,kr(i))).^2;
 end
 
 %Se calcula el cociente entre ambas funciones de Bessel
-TPSD(OBS)=0;
-for i=1:OBS
+TPSD(muestras)=0;
+for i=1:muestras
 TPSD(i) = J0T(i)./J1T(i);  
 end
 
