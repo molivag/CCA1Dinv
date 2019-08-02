@@ -13,34 +13,32 @@ LonReg= 65;
 %Dt=input('Muestreo: ');
 Dt= 0.004;
 %W=input('Tamanio de la ventana (seg): ');
-W = 10
+W = 1
 %Tras=input('Traslape de ventanas 1(0%) o 2(50%): ');
 Tras= 1;
              
      nV = (LonReg*NoReg)/W;             %numero de ventanas totales
   nXven = W/Dt;                         %datos por ventana             
      fs = 1/Dt;                         %Frecuencia Maxima
-     ds = 1/(nXven*Dt);                 %Muestreo frec
      f0 = 1/W;                          %Frecuencia Fundamental
-      f = (f0:ds:nXven)*(fs/nXven);      %Frequency range
+      f = (f0:nXven)*(fs/nXven);        %Frequency range
+     %(fs/nXven) esto es el delta f
      fn = 1/(2*Dt);
       M = Observados(file, NoEst, W, Tras, nV, nXven );
-     f2 = (f0:ds:fn);
-     F1 = Fig1(f2,M);
+     %f2 = (f0:ds:fn);
+     F1 = Fig1(f,M);
 
 % % % % % % % % % % % % % FRECUENCIAS A INVERTIR % % % % % % % % % % % % % 
 
 disp('Seleccione el ancho de banda a invertir' )
 disp(' ')
-
    min = input('Frecuencia minima: ');
-   %min = min/(W*.1);
    max = input('Frecuencia maxima: '); 
-   %max = max/(W*.1);
-  finv = (min:ds:max);    
+  finv = (min:(fs/nXven):max);    
     M2 = M(min:max)';
-   OBS = length(M2);
-    F2 = Fig2( finv, M2, F1);
+    %M2 = M(1:length(finv))';
+    OBS = length(M2);
+    F2 = Fig2( finv, M2, F1 );
 
 % % % % % % % % % % % % % % MODELO DIRECTO % % % % % % % % % % % % % % %  % 
       r = 15;
@@ -48,7 +46,7 @@ disp(' ')
       B = 0.9;                          %Expresion que define la forma de 
      Vp = A.*finv.^(-B);                        %la curva de velocidad de fase Vp
     PAR = length(Vp);
-%    V0 = 80;        %m/s  OPRTIMO 1
+%    V0 = 80;        %m/s  OPTIMO 1
 %    Dv = 10;        %m/s
 % sigma = .5;        %OPTIMO 0.5
 %    Vp = V0 + Dv*exp((-f.^2)./sigma);
@@ -86,14 +84,14 @@ else
 end
 legend('M_{Obs}','PSD_{0}')
 % RMS = sqrt(sum((M2 - Xmc).^2))
-RMS = sqrt(sum((M2 - Xmc).^2)/length(M2));
+RMS = sqrt(sum((M2 - Xmc).^2)/length(M2))
 figure(3)
 hold on
 bar(i,RMS)
 
 
 end
-RMS
+% RMS
 
 disp('Estabilidad de la matriz ZtZ')
 INV_ZtZ = inv(Z'*Z);
