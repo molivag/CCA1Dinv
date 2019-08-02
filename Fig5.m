@@ -4,7 +4,8 @@ function [ F5 ] = Fig5( finv, M2, TPSD, r )
 
 
 
-F5 = figure('name','Datos y Modelo Inicial');
+F5 =figure(2);
+set( F5, 'Position', [150 400 1000 300], 'Name', 'Ajustes');
 loglog(finv,M2,'ob','LineWidth',1.5);hold on;
 loglog(finv,TPSD','color',[0.06,0.7,0.06]','LineWidth',0.5);grid on
 title(['Inversion del PSD para $r$ =' ' ',num2str(r)],'FontSize', 12,'interpreter','latex')

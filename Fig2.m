@@ -7,7 +7,8 @@ F2 = subplot(4,4,[5 8]);
 loglog(finv,M2,'r'); grid on
 title('Ancho de banda de datos observadoa invertir','FontSize', 12,'interpreter','latex')
 xlabel('Frecuencia (Hz)','FontSize', 11,'interpreter','latex')
-ylabel('$ M \left[rk(w) \right]$','FontSize', 14,'Rotation',90,'interpreter','latex') 
+y=ylabel('$ M \left[rk(w) \right]$','FontSize', 11,'Rotation',90,'interpreter','latex') ;
+set(y, 'Units', 'Normalized', 'Position', [-0.05, 0.5, 0])
 linkaxes([F1,F2],'xy') 
 end
 
