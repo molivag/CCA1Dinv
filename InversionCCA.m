@@ -1,5 +1,6 @@
-clear; close all; 
-clc
+clc; clear; close all; disp('* * * * Inversion de datos CCA * * * *')
+disp(' ')
+
 
 % % % % % % % % % % DATOS OBSERVADOS: PARAMETROS DE ENTRADA % % % % % % % % 
 
@@ -13,7 +14,7 @@ LonReg= 65;
 %Dt=input('Muestreo: ');
 Dt= 0.004;
 %W=input('Tamanio de la ventana (seg): ');
-W = 1
+W = 7.5;
 %Tras=input('Traslape de ventanas 1(0%) o 2(50%): ');
 Tras= 1;
              
@@ -31,18 +32,17 @@ Tras= 1;
 % % % % % % % % % % % % % FRECUENCIAS A INVERTIR % % % % % % % % % % % % % 
 
 disp('Seleccione el ancho de banda a invertir' )
-disp(' ')
-   min = input('Frecuencia minima: ');
-   max = input('Frecuencia maxima: '); 
-  finv = (min:(fs/nXven):max);    
-    M2 = M(min:max)';
-    %M2 = M(1:length(finv))';
-    OBS = length(M2);
+   min = input('Minima: ');
+   max = input('Maxima: '); 
+  finv = (min:(fs/nXven):max);        
+     k = find(abs(f-min) < (fs/nXven));
+    M2 = M(k:length(finv)+(k-1))';
+   OBS = length(M2);
     F2 = Fig2( finv, M2, F1 );
 
 % % % % % % % % % % % % % % MODELO DIRECTO % % % % % % % % % % % % % % %  % 
       r = 15;
-      A = 1000000; 
+      A = 10000; 
       B = 0.9;                          %Expresion que define la forma de 
      Vp = A.*finv.^(-B);                        %la curva de velocidad de fase Vp
     PAR = length(Vp);
@@ -52,7 +52,16 @@ disp(' ')
 %    Vp = V0 + Dv*exp((-f.^2)./sigma);
    TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
      F3 = Fig3( finv, Vp, TPSD, r, F1, F2);
-uiwait(msgbox('      Iniciar Inversion?','help'));
+
+% uiwait(msgbox({'  * * * * Operation Completed * * * * ' ' ' ...
+%     '         Proceder a la Inversion?' ' '},'Success'));
+answer = questdlg('      Proceder con la Inversion?', ...
+'Proceso Completado', ...
+'Yes','No','No');
+switch answer
+case 'Yes'
+% % %
+    
 
 % % % % % % % % % % % % % % MODELO INVERSION % % % % % % %  % % % % % %
     per = 0.025;                                %Perturbacion en el Jacobiano
@@ -85,6 +94,7 @@ end
 legend('M_{Obs}','PSD_{0}')
 % RMS = sqrt(sum((M2 - Xmc).^2))
 RMS = sqrt(sum((M2 - Xmc).^2)/length(M2))
+res
 figure(3)
 hold on
 bar(i,RMS)
@@ -102,3 +112,76 @@ Coef=DVS_ZtZ(1)/DVS_ZtZ(length(Z))
 
 
 F7 = Fig7( finv, Xmc );
+% % %    
+case 'No'
+opc=2;
+while(opc==2)
+      disp(' ')
+      disp('Defina la Vp; considere A.*finv.^(-B)')    
+      disp(['Anterior ---> A=',num2str(A),' ' ';' ' ' 'B=',num2str(B)])
+      disp(' ')
+   A = input('A= '); 
+   B = input('B= ');                          %Expresion que define la forma de 
+  Vp = A.*finv.^(-B); 
+TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
+  F8 = Fig8( finv, Vp, TPSD, r, F1, F3);
+%   F8=F3;
+ opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
+clc
+end
+
+
+
+
+% % % % % % % % % % % % % % MODELO INVERSION % % % % % % %  % % % % % %
+    per = 0.025;                                %Perturbacion en el Jacobiano
+
+
+F5 = Fig5( finv, M2, TPSD, r);
+     F6 = Fig6;          
+    Xmc = Vp';
+      i = 0;
+    res = 1; 
+Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSD );
+while(res>0.05)
+    
+           i=i+1;
+     TPSDmc = DirectoCCA(finv,r,Xmc)';               %transpuesto solo para visualizacion
+        Xmc = Xmc + inv(Z'*Z) * Z' * ( M2 - TPSDmc );
+    TPSDcal = DirectoCCA(finv,r,Xmc)';
+          Z = Jacobiano( finv, r, Xmc, OBS, PAR, per, TPSDcal );
+figure(2);
+hold on
+FF2 = loglog(finv,TPSDcal,'--r','LineWidth',1);
+legend('M_{Obs}','PSD_{0}',strcat('PSD_{iter:', num2str(i),'}'))
+pause(1.5)
+res = abs(sum(M2 - TPSDcal));
+if 0.05>res
+    break 
+else
+    delete(FF2)
+end
+legend('M_{Obs}','PSD_{0}')
+% RMS = sqrt(sum((M2 - Xmc).^2))
+RMS = sqrt(sum((M2 - Xmc).^2)/length(M2))
+res
+figure(3)
+hold on
+bar(i,RMS)
+
+
+end
+% RMS
+
+disp('Estabilidad de la matriz ZtZ')
+INV_ZtZ = inv(Z'*Z);
+Determinante=det(Z'*Z)
+Rango = rank(Z'*Z)
+DVS_ZtZ=svd(Z'*Z);
+Coef=DVS_ZtZ(1)/DVS_ZtZ(length(Z))
+
+
+F7 = Fig7( finv, Xmc );
+
+end
+
