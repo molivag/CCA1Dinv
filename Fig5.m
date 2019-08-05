@@ -11,8 +11,7 @@ loglog(finv,TPSD','color',[0.06,0.7,0.06]','LineWidth',0.5);grid on
 title(['Inversion del PSD para $r$ =' ' ',num2str(r)],'FontSize', 12,'interpreter','latex')
 xlabel('Frecuencia (Hz)','FontSize', 11,'interpreter','latex')
 ylabel('$PSD$','FontSize', 14,'Rotation',90,'interpreter','latex')
-legend('M_{Obs}','PSD_{0}'); 
-
+legend('M_{Obs}','PSD_{0}', 'Location', 'Best'); 
 
 
 
