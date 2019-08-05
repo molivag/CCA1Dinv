@@ -26,7 +26,6 @@ Tras= 1;
      %(fs/nXven) esto es el delta f
      fn = 1/(2*Dt);
       M = Observados(file, NoEst, W, Tras, nV, nXven );
-     %f2 = (f0:ds:fn);
      F1 = Fig1(f,M);
 
 % % % % % % % % % % % % % FRECUENCIAS A INVERTIR % % % % % % % % % % % % % 
@@ -50,13 +49,13 @@ disp('Seleccione el ancho de banda a invertir' )
    Dv = 10;        %m/s
 sigma = 50;        %OPTIMO 0.5
    Vp = V0 + Dv*exp((-finv.^2)./sigma);
-   PAR = length(Vp);
-   TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
-     F3 = Fig3( finv, Vp, TPSD, r, F1, F2);
+  PAR = length(Vp);
+  PSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
+   F3 = Fig3( finv, Vp, TPSD, r, F1, F2);
 
 answer = questdlg('      Proceder con la Inversion?', ...
-'Proceso Completado', ...
-'Yes','No','No');
+'Proceso Completado','Yes','No','No');
+
 switch answer
 case 'Yes'
 % % %
