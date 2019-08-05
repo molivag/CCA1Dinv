@@ -68,7 +68,7 @@ case 'Yes'
     per = 0.025;                                %Perturbacion en el Jacobiano
 
 
-F5 = Fig5( finv, M2, TPSD, r);
+F5 = Fig5( finv, M2, TPSD, r); agregar best en legend figura ajustes
      F6 = Fig6;          
     Xmc = Vp';
       i = 0;
