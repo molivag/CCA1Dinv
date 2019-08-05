@@ -134,6 +134,12 @@ sigma = input('Sigma =');
    F8 = Fig8( finv, Vp, TPSD, r, F1, F3);
 %   F8=F3;
  opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
+ while(opc ~= 1 && opc ~= 2)
+disp(' ')
+disp('Error, solo se reconoce la opcion 1 y 2. Intente de nuevo') 
+opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
+ end
+ 
 clc
 end
 
