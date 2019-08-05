@@ -42,15 +42,14 @@ disp('Seleccione el ancho de banda a invertir' )
 
 % % % % % % % % % % % % % % MODELO DIRECTO % % % % % % % % % % % % % % %  % 
       r = 15;
-%       A = 10000; 
-%       B = 0.9;                          %Expresion que define la forma de 
-%      Vp = A.*finv.^(-B);                        %la curva de velocidad de fase Vp
-%     PAR = length(Vp);
-   V0 = 10;        %m/s  OPTIMO 1
-   Dv = 80;        %m/s
-sigma = 0.5;        %OPTIMO 0.5
-   Vp = V0 + Dv*exp((-finv.^2)./sigma);
-   PAR = length(Vp);
+      A = 10000; 
+      B = 0.9;                          %Expresion que define la forma de 
+     Vp = A.*finv.^(-B);                        %la curva de velocidad de fase Vp
+    PAR = length(Vp);
+%    V0 = 80;        %m/s  OPTIMO 1
+%    Dv = 10;        %m/s
+% sigma = .5;        %OPTIMO 0.5
+%    Vp = V0 + Dv*exp((-f.^2)./sigma);
    TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
      F3 = Fig3( finv, Vp, TPSD, r, F1, F2);
 
@@ -68,7 +67,7 @@ case 'Yes'
     per = 0.025;                                %Perturbacion en el Jacobiano
 
 
-F5 = Fig5( finv, M2, TPSD, r); agregar best en legend figura ajustes
+F5 = Fig5( finv, M2, TPSD, r);
      F6 = Fig6;          
     Xmc = Vp';
       i = 0;
@@ -118,30 +117,25 @@ case 'No'
 opc=2;
 while(opc==2)
       disp(' ')
-%       disp('Defina la Vp; considere A.*finv.^(-B)')    
-%       disp(['Anterior ---> A=',num2str(A),' ' ';' ' ' 'B=',num2str(B)])
-      disp('Defina la Vp; considere V0 + Dv*exp((-f^2)/sigma)')    
-      disp(['Anterior ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
-
-
-
-   disp(' ')
-   V0 = input('V0= '); 
-   Dv = input('Dv= ');                          %Expresion que define la forma de 
-sigma = input('Sigma =');
-   Vp = V0 + Dv*exp((-finv.^2)./sigma);
- TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
-   F8 = Fig8( finv, Vp, TPSD, r, F1, F3);
+      disp('Defina la Vp; considere A.*finv.^(-B)')    
+      disp(['Anterior ---> A=',num2str(A),' ' ';' ' ' 'B=',num2str(B)])
+      disp(' ')
+   A = input('A= '); 
+   B = input('B= ');                          %Expresion que define la forma de 
+  Vp = A.*finv.^(-B); 
+TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
+  F8 = Fig8( finv, Vp, TPSD, r, F1, F3);
 %   F8=F3;
  opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
- while(opc ~= 1 && opc ~= 2)
+while(opc ~= 1 && opc ~= 2)
 disp(' ')
 disp('Error, solo se reconoce la opcion 1 y 2. Intente de nuevo') 
-opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
+opc = input('El modelo inicial es correcto 1(Si), 2(No): ');
  end
- 
-clc
+ clc
 end
+
+
 
 
 
