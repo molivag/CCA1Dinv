@@ -86,21 +86,21 @@ FF2 = loglog(finv,TPSDcal,'--r','LineWidth',1);
 legend('M_{Obs}','PSD_{0}',strcat('PSD_{iter:', num2str(i),'}'))
 pause(1.5)
 
-Determinante=det(Z'*Z);
-DVS_ZtZ=svd(Z'*Z);
-Ind=DVS_ZtZ(length(Z))/DVS_ZtZ(1);
-% Ind=DVS_ZtZ(1)/DVS_ZtZ(length(Z));
-
-
-if (Ind < 10^3)
-    disp(['Inestabilidad en la inversa de la matriz ZtZ segun el indice DVS=', ' ', num2str(Ind)])
-    break
-elseif(Determinante < 0)
-    disp(['Inestabilidad en la inversa de la matriz ZtZ. Determinante=', ' ' ,num2str(Determinante)])
-break
-else
-    
-end
+% Determinante=det(Z'*Z);
+% DVS_ZtZ=svd(Z'*Z);
+% Ind=DVS_ZtZ(length(Z))/DVS_ZtZ(1);
+% % Ind=DVS_ZtZ(1)/DVS_ZtZ(length(Z));
+% 
+% 
+% if (Ind < 10^3)
+%     disp(['Inestabilidad en la inversa de la matriz ZtZ segun el indice DVS=', ' ', num2str(Ind)])
+%     break
+% elseif(Determinante < 0)
+%     disp(['Inestabilidad en la inversa de la matriz ZtZ. Determinante=', ' ' ,num2str(Determinante)])
+% break
+% else
+%     
+% end
 
 Residual = abs(sum(M2 - TPSDcal));
 if 0.05>Residual
