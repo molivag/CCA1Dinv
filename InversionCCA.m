@@ -14,7 +14,7 @@ LonReg= 65;
 %Dt=input('Muestreo: ');
 Dt= 0.004;
 %W=input('Tamanio de la ventana (seg): ');
-W = 7.5;
+W = 20;
 %Tras=input('Traslape de ventanas 1(0%) o 2(50%): ');
 Tras= 1;
              
@@ -53,12 +53,12 @@ sigma = 50;        %OPTIMO 0.5
   TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
    F3 = Fig3( finv, Vp, TPSD, r, F1, F2);
 
-% answer = questdlg('      Proceder con la Inversion?', ...
-% 'Proceso Completado','Yes','No','No');
-% 
-% switch answer
-% case 'Yes'
-% % %
+answer = questdlg('      Proceder con la Inversion?', ...
+'Proceso Completado','Yes','No','No');
+
+switch answer
+case 'Yes'
+% %
     
 
 % % % % % % % % % % % % % % MODELO INVERSION % % % % % % %  % % % % % %
@@ -69,11 +69,16 @@ F5 = Fig5( finv, M2, TPSD, r);
      F6 = Fig6;          
     Xmc = Vp';
       i = 0;
-    Residual = 1; 
+    RMS = 1; 
 Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSD );
 pause(1.5)
-while(Residual>0.05)
-    
+while(RMS>0.05)
+RMS = sqrt(sum((M2 - TPSD).^2)/length(M2));
+figure(3)
+hold on
+bar(i,RMS)   
+
+
            i=i+1;
     INV_ZtZ = inv(Z'*Z);
      TPSDmc = DirectoCCA(finv,r,Xmc)';               %transpuesto solo para visualizacion
@@ -109,83 +114,78 @@ else
     delete(FF2)
 end
 legend('M_{Obs}','PSD_{0}')
-% RMS = sqrt(sum((M2 - Xmc).^2))
-RMS = sqrt(sum((M2 - Xmc).^2)/length(M2))
+
+TPSD=TPSDcal;
+disp(['Iteracion: ',num2str(i)])
+RMS
 Residual
-figure(3)
-hold on
-bar(i,RMS)
-
-
-
-
-
 end
 F7 = Fig7( finv, Xmc );
 
-%     
-% case 'No'
-% opc=2;
-% while(opc==2)
-%       disp(' ')
-% %       disp('Defina la Vp; considere A.*finv.^(-B)')    
-% %       disp(['Anterior ---> A=',num2str(A),' ' ';' ' ' 'B=',num2str(B)])
-%       disp('Defina la Vp; considere V0 + Dv*exp((-f^2)/sigma)')    
-%       disp(['Anterior ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
-% 
-% 
-% 
-%    disp(' ')
-%    V0 = input('V0= '); 
-%    Dv = input('Dv= ');                          %Expresion que define la forma de 
-% sigma = input('Sigma =');
-%    Vp = V0 + Dv*exp((-finv.^2)./sigma);
-%  TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
-%    F8 = Fig8( finv, Vp, TPSD, r, F1, F3);
-% %   F8=F3;
-%  opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
-%  while(opc ~= 1 && opc ~= 2)
-% disp(' ')
-% disp('Error, solo se reconoce la opcion 1 y 2. Intente de nuevo') 
-% opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
-%  end
-%  
-% clc
-% end
+    
+case 'No'
+opc=2;
+while(opc==2)
+      disp(' ')
+%       disp('Defina la Vp; considere A.*finv.^(-B)')    
+%       disp(['Anterior ---> A=',num2str(A),' ' ';' ' ' 'B=',num2str(B)])
+      disp('Defina la Vp; considere V0 + Dv*exp((-f^2)/sigma)')    
+      disp(['Anterior ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
+   disp(' ')
+   V0 = input('V0= '); 
+   Dv = input('Dv= ');                          %Expresion que define la forma de 
+sigma = input('Sigma =');
+   Vp = V0 + Dv*exp((-finv.^2)./sigma);
+ TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
+   F8 = Fig8( finv, Vp, TPSD, r, F1, F3);
+%   F8=F3;
+ opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
+ while(opc ~= 1 && opc ~= 2)
+disp(' ')
+disp('Error, solo se reconoce la opcion 1 y 2. Intente de nuevo') 
+opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
+ end
+ 
+clc
+end
 % 
 % 
 % 
 % 
-% % % % % % % % % % % % % % % MODELO INVERSION % % % % % % %  % % % % % %
-%     per = 0.025;                                %Perturbacion en el Jacobiano
-% 
-% 
-% F5 = Fig5( finv, M2, TPSD, r);
-%      F6 = Fig6;          
-%     Xmc = Vp';
-%       i = 0;
-%     Residual = 1; 
-% Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSD );
-% pause(1.5) %este pause es para la primera iteracion 
-%            %que de tiempo de verse en lo que abre la figur
-% while(Residual>0.05)
-%     
-%            i=i+1;
-%     INV_ZtZ = inv(Z'*Z);
-%      TPSDmc = DirectoCCA(finv,r,Xmc)';               %transpuesto solo para visualizacion
-%         Xmc = Xmc + INV_ZtZ * Z' * ( M2 - TPSDmc );
-%     TPSDcal = DirectoCCA(finv,r,Xmc)';
-%           Z = Jacobiano( finv, r, Xmc, OBS, PAR, per, TPSDcal );
-% figure(2);
-% hold on
-% FF2 = loglog(finv,TPSDcal,'--r','LineWidth',1);
-% legend('M_{Obs}','PSD_{0}',strcat('PSD_{iter:', num2str(i),'}'))
-% pause(1.5)
-% 
+% % % % % % % % % % % % % % MODELO INVERSION % % % % % % %  % % % % % %
+    per = 0.025;                                %Perturbacion en el Jacobiano
+
+
+F5 = Fig5( finv, M2, TPSD, r);
+     F6 = Fig6;          
+    Xmc = Vp';
+      i = 0;
+    RMS = 1; 
+Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSD );
+pause(1.5)
+while(RMS>0.05)
+RMS = sqrt(sum((M2 - TPSD).^2)/length(M2));
+figure(3)
+hold on
+bar(i,RMS)   
+
+
+           i=i+1;
+    INV_ZtZ = inv(Z'*Z);
+     TPSDmc = DirectoCCA(finv,r,Xmc)';               %transpuesto solo para visualizacion
+        Xmc = Xmc + INV_ZtZ * Z' * ( M2 - TPSDmc );
+    TPSDcal = DirectoCCA(finv,r,Xmc)';
+          Z = Jacobiano( finv, r, Xmc, OBS, PAR, per, TPSDcal );
+figure(2);
+hold on
+FF2 = loglog(finv,TPSDcal,'--r','LineWidth',1);
+legend('M_{Obs}','PSD_{0}',strcat('PSD_{iter:', num2str(i),'}'))
+pause(1.5)
+
 % Determinante=det(Z'*Z);
 % DVS_ZtZ=svd(Z'*Z);
-% % Ind=DVS_ZtZ(length(Z))/DVS_ZtZ(1);
-% Ind=DVS_ZtZ(1)/DVS_ZtZ(length(Z));
+% Ind=DVS_ZtZ(length(Z))/DVS_ZtZ(1);
+% % Ind=DVS_ZtZ(1)/DVS_ZtZ(length(Z));
 % 
 % 
 % if (Ind < 10^3)
@@ -197,27 +197,21 @@ F7 = Fig7( finv, Xmc );
 % else
 %     
 % end
-% 
-% Residual = abs(sum(M2 - TPSDcal));
-% if 0.05>Residual
-%     break 
-% else
-%     delete(FF2)
-% end
-% legend('M_{Obs}','PSD_{0}')
-% % RMS = sqrt(sum((M2 - Xmc).^2))
-% RMS = sqrt(sum((M2 - Xmc).^2)/length(M2))
-% Residual
-% figure(3)
-% hold on
-% bar(i,RMS)
-% 
-% 
-% 
-% 
-% end
-% 
-% F7 = Fig7( finv, Xmc );
-% 
-% end
+
+Residual = abs(sum(M2 - TPSDcal));
+if 0.05>Residual
+    break 
+else
+    delete(FF2)
+end
+legend('M_{Obs}','PSD_{0}')
+
+TPSD=TPSDcal;
+disp(['Iteracion: ',num2str(i)])
+RMS
+Residual
+end
+F7 = Fig7( finv, Xmc );
+
+end
 
