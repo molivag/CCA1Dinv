@@ -1,4 +1,4 @@
-function [ M ] = Observados( file, NoEst, W, Tras, nV, nXven )
+function [M, nXven, f, fs, F1] = Observados( file, NoEst, W, Dt, Tras, LonReg, NoReg)
 
 % Fun_M     Pograma CCA mejorado para n archivos y ventaneado. El algoritmo                                   %
 %           o flujo seguido para programarlo fue el sugerido por:          
@@ -7,39 +7,17 @@ function [ M ] = Observados( file, NoEst, W, Tras, nV, nXven )
 %                                                                          
 % Creado por FCH 2009 y modificado por MAOG 2019                                                                                                                  %  
 %                                                                          
-% % % % % % % % % % % % Lista de Variables % % % % % % % % % % % % %
-%
-%       file  =    Lectura del archivo .dat que se graba en campo
-%      NoEst  =    Numero de estaciones
-%      NoReg  =    Numero de registos de ruido sismico
-%      LonReg =    Longitud del registro de ruido en segundos
-%          Dt =    Muestreo en segundos
-%           W =    Ancho de la ventana en segundos
-%        Tras =    Porcentaje del traslape
-% 
 
-% clc; clear all
-% file=load ('registros.dat');
-% NoEst=input('Numero de estaciones en el arreglo circular: ')
-% NoReg=input('Numero de registros de ruido: ')
-% LonReg=input('Longitud de registro en segundos: ') 
-% Dt=input('Muestreo: ')
-% W=input('Tama?o de la ventana en segundos: ')
-% Tras=input('Traslape entre ventanas 1(0%) o 2(50%): ')
-% 
-% 
-% 
-% 
-%      nV = (LonReg*NoReg)/W;      %numero de ventanas totales
-%   nXven = W/Dt                   %datos por ventana             RENOMBRAR POR Nven al parecer siempre ser? igual a las observaciones por lo que se puede quitar y ahorrar una variable
-%      fs = 1/Dt;                  %Frecuencia Maxima
-%      ds = 1/(nXven*Dt);          %Muestreo frec
-%       f = (0:ds:nXven-1)*(fs/nXven); % Frequency range
 
-pi=4*atan(1);
 
-%si se escoge la opcion de traslape al 50% se debe bajar el muestreo de
-%0.008 a 0.004
+     pi = 4*atan(1); 
+  nXven = W/Dt;                         %datos por ventana             
+     fs = 1/Dt;                         %Frecuencia Maxima
+     f0 = 1/W;                          %Frecuencia Fundamental
+      f = (f0:nXven)*(fs/nXven);        %Frequency range
+     %(fs/nXven) esto es el delta f
+     fn = 1/(2*Dt);
+     nV = (LonReg*NoReg)/W;             %numero de ventanas totales
 
 if Tras == 2     
     nV=(nV*2)-1;
@@ -136,6 +114,7 @@ M_smooth= PromSuavisadoPSD_G0./PromSuavisadoPSD_G1; %asi se corrigio
 % loglog(f,M_smooth,'r')
 % %FIN DE LAS GRAFICAs comentadas
 
+F1 = Fig1(f,M);
 end
 
 
