@@ -12,7 +12,7 @@ LonReg = 65;
 %Dt=input('Muestreo: ');
     Dt = 0.004;
 %W=input('Tamanio de la ventana (seg): ');
-     W = 20;
+     W = 7.5;
 %Tras=input('Traslape de ventanas 1(0%) o 2(50%): ');
   Tras = 1;
      r = 15;             
@@ -31,7 +31,7 @@ LonReg = 65;
       Dv = 10;        %m/s
    sigma = 50;        %OPTIMO 0.5
       Vp = V0 + Dv*exp((-finv.^2)./sigma);
-     PAR = length(Vp);      %introducir en la funcion Directo CCA y ponerlo como parametro de salida para ser leido por Jacobiano
+     PAR = length(Vp);         %introducir en la funcion Directo CCA y ponerlo como parametro de salida para ser leido por Jacobiano
     TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
       F3 = Fig3( finv, Vp, TPSD, r, F1, F2);
      per = 0.025;                                %Perturbacion en el Jacobiano
@@ -40,8 +40,7 @@ LonReg = 65;
 
 switch answer
 case 'Yes'
-
-Vpcal = INV(finv, r, Vp, OBS, PAR, per, M2, TPSD );
+Vpcal = INVy(finv, r, Vp, OBS, PAR, per, M2, TPSD, V0, Dv, sigma);
     
 case 'No'
       opc=2;
@@ -57,7 +56,7 @@ while(opc==2)
       disp('Defina la Vp; considere V0 + Dv*exp((-f^2)/sigma)')    
       disp(['Anterior ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
    disp(' ')
-   V0 = input(' . V0 = '); 
+   V0 = input('   V0 = '); 
    Dv = input('   Dv = ');                          %Expresion que define la forma de 
 sigma = input('Sigma = ');
    Vp = V0 + Dv*exp((-finv.^2)./sigma);
@@ -71,9 +70,13 @@ disp('Error, solo se reconoce la opcion 1 y 2. Intente de nuevo')
 opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
  end
  
+ if opc == 1
+     continue
+ else
 clc
+ end
 end
 
-Vpcal = INV(finv, r, Vp, OBS, PAR, per, M2, TPSD );
+Vpcal = INVn(finv, r, Vp, OBS, PAR, per, M2, TPSD );
 
 end
