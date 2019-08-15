@@ -1,16 +1,18 @@
-function [ Xmc, F7, F5, F6 ] = INV(finv, r, Vp, OBS, PAR, per, M2, TPSD )
+function [ Xmc, F7, F5, F6 ] = INVy(finv, r, Vp, OBS, PAR, per, M2, TPSD, V0, Dv, sigma)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
 
-
-
+disp(' ')
+disp('Modelo de Vp ---> V0 + Dv*exp((-f^2)/sigma)')    
+disp(['Modelo actual ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
      F5 = Fig5( finv, M2, TPSD, r);
      F6 = Fig6;   
     Xmc = Vp';
       i = 0;
     RMS = 1; 
 Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSD );
+disp(' ')
 while(RMS>0.05)
 RMS = sqrt(sum((M2 - TPSD).^2)/length(M2));
 figure(3)
