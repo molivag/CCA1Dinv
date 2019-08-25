@@ -1,7 +1,40 @@
-function [ Xmc, F7, F5, F6 ] = INVn(finv, r, Vp, OBS, PAR, per, M2, TPSD)
+function [ Xmc, F7, F5, F6 ] = INVn(finv, r, Vp, OBS, PAR, per, M2, TPSD, V0, Dv, sigma, F1, F3)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
+          opc=2;
+while(opc==2)
+      disp(' ')
+%       disp('Defina la Vp; considere A.*finv.^(-B)')    
+%       disp(['Anterior ---> A=',num2str(A),' ' ';' ' ' 'B=',num2str(B)])
+%         disp(' ')
+%          A = input('A = '); 
+%          B = input('B = ');                          %Expresion que define la forma de 
+%         Vp = A.*finv.^(-B); 
+
+      disp('Defina la Vp; considere V0 + Dv*exp((-f^2)/sigma)')    
+      disp(['Anterior ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
+   disp(' ')
+   V0 = input('   V0 = '); 
+   Dv = input('   Dv = ');                          %Expresion que define la forma de 
+sigma = input('Sigma = ');
+   Vp = V0 + Dv*exp((-finv.^2)./sigma);
+ TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
+   F8 = Fig8( finv, Vp, TPSD, r, F1, F3);
+%   F8=F3;
+ opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
+ while(opc ~= 1 && opc ~= 2)
+disp(' ')
+disp('Error, solo se reconoce la opcion 1 y 2. Intente de nuevo') 
+opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
+ end
+ 
+ if opc == 1
+     continue
+ else
+clc
+ end
+end
 
      F5 = Fig5( finv, M2, TPSD, r);
      F6 = Fig6;   
@@ -10,6 +43,7 @@ function [ Xmc, F7, F5, F6 ] = INVn(finv, r, Vp, OBS, PAR, per, M2, TPSD)
     RMS = 1; 
 Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSD );
 disp(' ')
+pause(2)
 while(RMS>0.05)
 RMS = sqrt(sum((M2 - TPSD).^2)/length(M2));
 figure(3)
