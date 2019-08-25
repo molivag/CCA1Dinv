@@ -13,6 +13,7 @@ disp(['Modelo actual ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';'
     RMS = 1; 
 Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSD );
 disp(' ')
+pause(2)
 while(RMS>0.05)
 RMS = sqrt(sum((M2 - TPSD).^2)/length(M2));
 figure(3)
