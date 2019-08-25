@@ -1,7 +1,6 @@
 clc; clear; close all; disp('* * * * Inversion de datos CCA * * * *'); disp(' ')
 
 % % % % % % % % % % DATOS OBSERVADOS: PARAMETROS DE ENTRADA % % % % % % % % 
-
   file = load ('registros.dat'); %registros.dat antes lamado todas.dat
 %NoEst=input('Numero de estaciones en el arreglo circular: ');
  NoEst = 20;
@@ -17,66 +16,23 @@ LonReg = 65;
   Tras = 1;
      r = 15;             
 [M,nXven,f,fs,F1] =  Observados(file,NoEst,W,Dt,Tras,LonReg,NoReg);
-
 % % % % % % % % % % % % % FRECUENCIAS A INVERTIR % % % % % % % % % % % % % 
-
  [finv,M2,OBS,F2] = BandaINV(fs, nXven, f, M, F1);
-
-% % % % % % % % % % % % % % MODELO DIRECTO % % % % % % % % % % % % % % %  % 
-%        A = 10000; 
-%        B = 0.9;                          %Expresion que define la forma de 
-%       Vp = A.*finv.^(-B);                        %la curva de velocidad de fase Vp
-     
-      V0 = 800;        %m/s  OPTIMO 1
-      Dv = 10;        %m/s
-   sigma = 50;        %OPTIMO 0.5
+% % % % % % % % % % % % % % MODELO DIRECTO % % % % % % % % % % % % % % % %      
+      V0 = 800;                       %m/s  OPTIMO 1
+      Dv = 10;                        %m/s
+   sigma = 50;                        %OPTIMO 0.5
       Vp = V0 + Dv*exp((-finv.^2)./sigma);
-     PAR = length(Vp);         %introducir en la funcion Directo CCA y ponerlo como parametro de salida para ser leido por Jacobiano
-    TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
+     PAR = length(Vp);          %introducir en la funcion Directo CCA y ponerlo como parametro de salida para ser leido por Jacobiano
+    TPSD = DirectoCCA(finv,r,Vp)';    %transpuesto solo para visualizacion
       F3 = Fig3( finv, Vp, TPSD, r, F1, F2);
-     per = 0.025;                                %Perturbacion en el Jacobiano
+     per = 0.025;                     %Perturbacion en el Jacobiano
   answer = questdlg('      Proceder con la Inversion?', ...
 'Proceso Completado','Yes','No','No');
-
+% % % % % % % % % % % % % % INVERSI?N % % % % % % % % % % % % % % % % % % %      
 switch answer
 case 'Yes'
 Vpcal = INVy(finv, r, Vp, OBS, PAR, per, M2, TPSD, V0, Dv, sigma);
-    
 case 'No'
-      opc=2;
-while(opc==2)
-      disp(' ')
-%       disp('Defina la Vp; considere A.*finv.^(-B)')    
-%       disp(['Anterior ---> A=',num2str(A),' ' ';' ' ' 'B=',num2str(B)])
-%         disp(' ')
-%          A = input('A = '); 
-%          B = input('B = ');                          %Expresion que define la forma de 
-%         Vp = A.*finv.^(-B); 
-
-      disp('Defina la Vp; considere V0 + Dv*exp((-f^2)/sigma)')    
-      disp(['Anterior ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
-   disp(' ')
-   V0 = input('   V0 = '); 
-   Dv = input('   Dv = ');                          %Expresion que define la forma de 
-sigma = input('Sigma = ');
-   Vp = V0 + Dv*exp((-finv.^2)./sigma);
- TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
-   F8 = Fig8( finv, Vp, TPSD, r, F1, F3);
-%   F8=F3;
- opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
- while(opc ~= 1 && opc ~= 2)
-disp(' ')
-disp('Error, solo se reconoce la opcion 1 y 2. Intente de nuevo') 
-opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
- end
- 
- if opc == 1
-     continue
- else
-clc
- end
-end
-
-Vpcal = INVn(finv, r, Vp, OBS, PAR, per, M2, TPSD );
-
+Vpcal = INVn(finv, r, Vp, OBS, PAR, per, M2, TPSD, V0, Dv, sigma, F1, F3);
 end
