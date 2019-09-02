@@ -4,20 +4,29 @@ function [file, NoEst, NoReg, LonReg, Dt, W, Tras, r] = reAdfiLe( registros )
 
 
 % % % % % % % % % % DATOS OBSERVADOS: PARAMETROS DE ENTRADA % % % % % % % % 
-  file = load ('registros.dat'); %registros.dat antes lamado todas.dat
-%NoEst=input('Numero de estaciones en el arreglo circular: ');
+  file = load (registros); %registros.dat antes lamado todas.dat
+% NoEst=input('Numero de estaciones en el arreglo circular: ');
  NoEst = 20;
-%NoReg=input('Numero de registros de ruido: ');
+disp(' ')
+% NoReg=input('               Numero de registros de ruido: ');
  NoReg = 20;
-%LonReg=input('Longitud de registro (seg): ');
+disp(' ')
+% LonReg=input('                 Longitud de registro (seg): ');
 LonReg = 65;
-%Dt=input('Muestreo: ');
+disp(' ')
+% Dt=input('                                   Muestreo: ');
     Dt = 0.004;
-%W=input('Tamanio de la ventana (seg): ');
+disp(' ')
+% W=input('                Tamanio de la ventana (seg): ');
      W = 7.5;
-%Tras=input('Traslape de ventanas 1(0%) o 2(50%): ');
+disp(' ')
+% Tras=input('        Traslape de ventanas 1(0%) o 2(50%): ');
   Tras = 1;
-     r = 15; 
+  r = 15; 
+disp(' ')    
+%     r = input('                          Radio del arreglo: ');
+disp(' ')    
+   
 
 end
 

@@ -1,4 +1,4 @@
-function [ Xmc, F7, F5, F6 ] = INVn(finv, r, Vp, OBS, PAR, per, M2, TPSD, V0, Dv, sigma, F1, F3)
+function [ Xmc, F7, F5, F6 ] = INVn(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, Dv, sigma, F1, F3)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -19,8 +19,8 @@ while(opc==2)
    Dv = input('   Dv = ');                          %Expresion que define la forma de 
 sigma = input('Sigma = ');
    Vp = V0 + Dv*exp((-finv.^2)./sigma);
- TPSD = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
-   F8 = Fig8( finv, Vp, TPSD, r, F1, F3);
+ TPSDR = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
+   F8 = Fig8( finv, Vp, TPSDR, r, F1, F3);
 %   F8=F3;
  opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
  while(opc ~= 1 && opc ~= 2)
@@ -36,16 +36,16 @@ clc
  end
 end
 
-     F5 = Fig5( finv, M2, TPSD, r);
+     F5 = Fig5( finv, M2, TPSDR, r);
      F6 = Fig6;   
     Xmc = Vp';
       i = 0;
     RMS = 1; 
-Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSD );
+Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSDR );
 disp(' ')
 pause(2)
 while(RMS>0.05)
-RMS = sqrt(sum((M2 - TPSD).^2)/length(M2));
+RMS = sqrt(sum((M2 - TPSDR).^2)/length(M2));
 figure(3)
 hold on
 bar(i,RMS)   
@@ -86,7 +86,7 @@ else
 end
 legend('M_{Obs}','PSD_{0}')
 
-TPSD=TPSDcal;
+TPSDR=TPSDcal;
 disp(['Iteracion: ',num2str(i)])
 RMS
 Residual

@@ -1,4 +1,4 @@
-function [ Xmc, F7, F5, F6 ] = INVy(finv, r, Vp, OBS, PAR, per, M2, TPSD, V0, Dv, sigma)
+function [ Xmc, F7, F5, F6 ] = INVy(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, Dv, sigma)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,16 +6,16 @@ function [ Xmc, F7, F5, F6 ] = INVy(finv, r, Vp, OBS, PAR, per, M2, TPSD, V0, Dv
 disp(' ')
 disp('Modelo de Vp ---> V0 + Dv*exp((-f^2)/sigma)')    
 disp(['Modelo actual ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
-     F5 = Fig5( finv, M2, TPSD, r);
+     F5 = Fig5( finv, M2, TPSDR, r);
      F6 = Fig6;   
     Xmc = Vp';
       i = 0;
     RMS = 1; 
-Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSD );
+Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSDR );
 disp(' ')
 pause(2)
 while(RMS>0.05)
-RMS = sqrt(sum((M2 - TPSD).^2)/length(M2));
+RMS = sqrt(sum((M2 - TPSDR).^2)/length(M2));
 figure(3)
 hold on
 bar(i,RMS)   
@@ -56,7 +56,7 @@ else
 end
 legend('M_{Obs}','PSD_{0}')
 
-TPSD=TPSDcal;
+TPSDR=TPSDcal;
 disp(['Iteracion: ',num2str(i)])
 RMS
 Residual

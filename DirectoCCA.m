@@ -1,4 +1,4 @@
-function [ TPSD ] = DirectoCCA( finv, r, Vp )
+function [ TPSDR ] = DirectoCCA( finv, r, Vp )
 
 %DirectoCC  Resuelve el proble directo de la propagacion de ondas Rayleigh 
 %           que se registran en un arreglo circular sin centro midiendoi 
@@ -42,9 +42,9 @@ J1T(i) = (besselj(1,kr(i))).^2;
 end
 
 %Se calcula el cociente entre ambas funciones de Bessel
-TPSD(muestras)=0;
+TPSDR(muestras)=0;
 for i=1:muestras
-TPSD(i) = J0T(i)./J1T(i);  
+TPSDR(i) = J0T(i)./J1T(i);  
 end
 
 end

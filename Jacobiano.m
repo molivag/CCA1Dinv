@@ -1,4 +1,4 @@
-function [ Z ] = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSD )
+function [ Z ] = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSDR )
 
 % MATRIZ JACOBIANO: Esta funciOn calcula la matriz de jacobiano para el 
 %                   caso general de m datos por n parametros. Esta restrin-
@@ -38,7 +38,7 @@ h = Vp*per;         %Esto es para indicar un 0.25% de VP como perturbacion
             Fper_1 = DirectoCCA(finv, r, Vp1 )';                      %respuesta f(x+h)
          Fper_1_2h = DirectoCCA(finv, r, Vp2)';                  %respuesta f(x+2h)
             for i=1:OBS
-                Z(i,j)=(-3*TPSD(i) + 4*Fper_1(i) - Fper_1_2h(i))/(2*h(j));
+                Z(i,j)=(-3*TPSDR(i) + 4*Fper_1(i) - Fper_1_2h(i))/(2*h(j));
             end
             
          elseif j==(PAR)   %Ultima columna diferencia atrasada
@@ -49,7 +49,7 @@ h = Vp*per;         %Esto es para indicar un 0.25% de VP como perturbacion
               Bper_5 = DirectoCCA(finv, r, Vp_p5);     %respuesta f(x-h)
            Bper_5_2h = DirectoCCA(finv, r, Vp_2p5);    %respuesta f(x-2h)
             for i=1:OBS
-                Z(i,j)=( 3*TPSD(i) - 4*Bper_5(i) + Bper_5_2h(i) ) / (2*h(j));
+                Z(i,j)=( 3*TPSDR(i) - 4*Bper_5(i) + Bper_5_2h(i) ) / (2*h(j));
             end
 
          else           %Columnas centrales diferencia centrada

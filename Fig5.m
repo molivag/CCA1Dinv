@@ -1,4 +1,4 @@
-function [ F5 ] = Fig5( finv, M2, TPSD, r )
+function [ F5 ] = Fig5( finv, M2, TPSDR, r )
 %UNTITLED6 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -7,8 +7,8 @@ function [ F5 ] = Fig5( finv, M2, TPSD, r )
 F5 =figure(2);
 set( F5, 'Position', [150 400 1000 300], 'Name', 'Ajustes');
 loglog(finv,M2,'ob','LineWidth',1.5);hold on;
-loglog(finv,TPSD','color',[0.06,0.7,0.06]','LineWidth',0.5);grid on
-title(['Inversion del PSD para $r$ =' ' ',num2str(r)],'FontSize', 12,'interpreter','latex')
+loglog(finv,TPSDR','color',[0.06,0.7,0.06]','LineWidth',0.5);grid on
+title(['Inversion del PSD para un radio =' ' ',num2str(r),' ' 'm'],'FontSize', 12,'interpreter','latex')
 xlabel('Frecuencia (Hz)','FontSize', 11,'interpreter','latex')
 ylabel('$PSD$','FontSize', 14,'Rotation',90,'interpreter','latex')
 legend('M_{Obs}','PSD_{0}', 'Location', 'Best'); 
