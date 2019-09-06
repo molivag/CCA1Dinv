@@ -1,1 +1,0 @@
-- Se deberá renombre el archivo .dat con el nombre de registros.dat
