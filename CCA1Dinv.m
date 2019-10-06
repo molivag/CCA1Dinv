@@ -15,11 +15,11 @@ clc; clear; close all; disp('* * * * Inversion de datos CCA * * * *'); disp(' ')
       F3 = Fig3( finv, Vp, TPSDR, r, F1, F2);
   answer = questdlg('      Proceder con la Inversion?', ...
 'Proceso Completado','Yes','No','No');
-% % % % % % % % % % % % MODELADO INVERSION % % % % % % % % % % % % % % % % 
-  per = 0.025;                     %Perturbacion en el Jacobiano
+% % % % % % % % % % % % % MODELADO INVERSO % % % % % % % % % % % % % % % % 
+     per = 0.025;                     %Perturbacion en el Jacobiano
 switch answer
-case 'Yes'
-Vpcal = INVy(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, Dv, sigma);
-case 'No'
-Vpcal = INVn(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, Dv, sigma, F1, F3);
+    case 'Yes'
+        Vpcal = INVy(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, Dv, sigma);
+    case 'No'
+        Vpcal = INVn(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, Dv, sigma, F1, F3);
 end
