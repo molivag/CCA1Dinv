@@ -2,7 +2,9 @@ function [ Xmc, F7, F5, F6 ] = INVtikhonov(finv, r, Vp, OBS, PAR, per, M2, TPSDR
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
-
+disp(' ')
+disp(' * * * * * REGULARIZACION DE TIKHONOV * * * * * ')
+disp(' ')
 disp('Modelo de Vp -> V0 + Dv*exp((-f^2)/sigma)')    
 disp(['Modelo actual -> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
    F5 = Fig5( finv, M2, TPSDR, r );
@@ -11,17 +13,25 @@ disp(['Modelo actual -> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' '
     i = 0;
   RMS = 1; 
     I = diag(ones(1,PAR));
- alfa = 0.000001;
+%  alfa = 0.000001;
+            disp(' ')
+            disp('Define alfa para la regularizacion')
+            disp('alfa muy pequenio --> Minimo cuadrado')
+            disp('alfa grande --------> Sobreamortiguamiento')
+            disp('alfa medio ---------> Regularizado')
+            alfa = input('alfa = ');
+            disp(' ')
     Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSDR );
-    pause(2)
-    
+%     pause(2)
 while(RMS > 0.05)
+             i = i+1;
            RMS = sqrt(sum((M2 - TPSDR).^2)/length(M2));
     figure(3)
     hold on
-    bar(i,RMS)  
+    bar(i,RMS)
+    set(gca, 'XLim', [0.5, i+.5], 'XTick', 1:1:i)
 
-             i = i+1;
+             
         TPSDmc = DirectoCCA(finv,r,Xmc)';               %transpuesto solo para visualizacion
         Vp_reg = Xmc + inv(Z'*Z + (alfa*I)) * Z' * (M2 - TPSDmc);
        TPSDcal = DirectoCCA(finv,r,Vp_reg)';               %transpuesto solo para visualizacion
@@ -29,12 +39,12 @@ while(RMS > 0.05)
 
     figure(2);
     hold on
-           FF2 = loglog(finv,TPSDcal,'--r','LineWidth',1);
+           FF2 = loglog(finv,TPSDcal,'--k','LineWidth',1);
     legend('M_{Obs}','PSD_{0}',strcat('PSD_{iter:', num2str(i),'}'))
-    pause(1.5)
+%     pause(1.5)
 
     disp(['Iteracion: ',num2str(i)])
-      Residual = abs(sum(M2 - TPSDcal))
+%       Residual = abs(sum(M2 - TPSDcal));
       RMS
     if RMS<=0.05
         break 
@@ -48,7 +58,9 @@ while(RMS > 0.05)
 
 end
     F7 = Fig7( finv, Vp_reg);
-
+    title('Velocidad de fase regularizada')
+     
+     
 end
 
 
