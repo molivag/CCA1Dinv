@@ -15,12 +15,15 @@ Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSDR );
 disp(' ')
 pause(2)
 while(RMS>0.05)
-RMS = sqrt(sum((M2 - TPSDR).^2)/length(M2));
+          i = i+1;
+        RMS = sqrt(sum((M2 - TPSDR).^2)/length(M2));
 figure(3)
 hold on
-bar(i,RMS)   
+bar(i,RMS)
+set(gca, 'XLim', [0.5, i+.5], 'XTick', 1:1:i)
 
-           i=i+1;
+
+           
     INV_ZtZ = inv(Z'*Z);
      TPSDmc = DirectoCCA(finv,r,Xmc)';               %transpuesto solo para visualizacion
         Xmc = Xmc + INV_ZtZ * Z' * ( M2 - TPSDmc );
@@ -47,9 +50,10 @@ pause(1.5)
 % else
 %     
 % end
-
-Residual = abs(sum(M2 - TPSDcal));
-if 0.05>Residual
+disp(['Iteracion: ',num2str(i)])
+% Residual = abs(sum(M2 - TPSDcal))
+RMS
+if RMS <= 0.05
     break 
 else
     delete(FF2)
@@ -57,12 +61,11 @@ end
 legend('M_{Obs}','PSD_{0}')
 
 TPSDR=TPSDcal;
-disp(['Iteracion: ',num2str(i)])
-RMS
-Residual
+
 end
 
 F7 = Fig7( finv, Xmc);
+title('Velocidad de fase por regresion lineal')
 
 
 end
