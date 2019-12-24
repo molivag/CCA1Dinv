@@ -1,4 +1,4 @@
-function [ F3 ] = Fig3( finv, Vp, TPSDR, r, F1, F2)
+function [ F3, Opcion, anss] = Fig3( finv, Vp, TPSDR, r, F1, F2)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -17,6 +17,26 @@ xlabel('Frecuencia (Hz)','FontSize', 11,'interpreter','latex');grid on
 y=ylabel('$\displaystyle \left[\frac{J_{_0}}{J_{_1} }\right]^2 $','FontSize', 11,'Rotation',0,'interpreter','latex');
 set(y, 'Units', 'Normalized', 'Position', [-0.08, 0.3, 0])
 linkaxes([F1,F2,F4],'x')
+
+
+
+Opcion = input([' + + + + + + + Tipo de Inversion + + + + + + + +'...
+'\n +                                             + ',...
+'\n + - - - 1.- Minimo Cuadrado Estandar: - - - - + ',...
+'\n + - - - 2.- Regularizacion de Tikhonov: - - - + ',...
+'\n +                                             + ',...
+'\n + + + + + + + + + + + + + + + + + + + + + + + + ',...
+'\n Opcion = ']);
+if Opcion == 1
+    clc
+    disp ('Inversion por Minimo Cuadrado Estandar')
+elseif Opcion == 2
+    clc
+    disp('Inversi?n por Regularizacion de Tikhonov')
+end
+
+  anss = questdlg('      Proceder con la Inversion?', ...
+'Proceso Completado','Yes','No','No');
 
 end
 
