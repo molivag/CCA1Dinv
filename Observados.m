@@ -93,27 +93,6 @@ PromSuavisadoPSD_G0=SumSuavisadoPSD_G0./nV;
 PromSuavisadoPSD_G1=SumSuavisadoPSD_G1./nV;
 M_smooth= PromSuavisadoPSD_G0./PromSuavisadoPSD_G1; %asi se corrigio
 
-
-%matrix(:)=M;
-%M=matrix;
-%save sal75.dat matrix -ascii
-
-
- % % % % % % Estas graficas ya estan en el programa InversionCCA.m % % % % % % %
-%Graficado del cociente G0/G1 con y sin suavizado
-% figure('name','Funcion M')
-% 
-% loglog (f,M,'b',f,M_smooth,'r');title('M[rk(w)]')
-% legend('M','M_{Smooth}')
-% grid on; xlabel('f'); ylabel('M')
-% 
-% figure('name','Funcion M')
-% loglog(f,M,'b'); grid on
-% 
-% figure('name','Funcion M suavizada')
-% loglog(f,M_smooth,'r')
-% %FIN DE LAS GRAFICAs comentadas
-
 F1 = Fig1(f,M);
 end
 
