@@ -6,26 +6,35 @@ clc; clear; close all; disp('* * * * Inversion de datos CCA * * * *'); disp(' ')
 % % % % % % % % % % % % % FRECUENCIAS A INVERTIR % % % % % % % % % % % % % 
  [finv,M2,OBS,F2] = BandaINV(fs, nXven, f, M, F1);
 % % % % % % % % % % % % % % MODELADO DIRECTO % % % % % % % % % % % % % % % 
-      V0 = 800;                       %m/s  OPTIMO 1
+      V0 = 800;                       %m/s  
       Dv = 10;                        %m/s
-   sigma = 50;                        %OPTIMO 0.5
+   sigma = 50;                        
       Vp = V0 + Dv*exp((-finv.^2)./sigma);
      PAR = length(Vp);          
-   TPSDR = DirectoCCA(finv,r,Vp)';    %transpuesto solo para visualizacion
-      F3 = Fig3( finv, Vp, TPSDR, r, F1, F2);
-  answer = questdlg('      Proceder con la Inversion?', ...
-'Proceso Completado','Yes','No','No');
+   TPSDR = DirectoCCA(finv,r,Vp)';    
+      [F3, Opcion, anss] = Fig3( finv, Vp, TPSDR, r, F1, F2);
 % % % % % % % % % % % % % % % % % MODELADO INVERSO % % % % % % % % % % % % % 
      per = 0.025;                     %Perturbacion en el Jacobiano
-switch answer
+switch anss
     case 'Yes'
-        Option = input('Inversion estandar (1) o Regularizacion de Tikhonov (2): ');
-        if Option == 1
+        if Opcion == 1
                 Vpcal_s = INVy(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, Dv, sigma);
-        elseif Option == 2
-                Vpcal_r = INVtikhonov(finv, r, Vp, OBS, PAR, per, M2,...
-                                      TPSDR, V0, Dv, sigma);
+        elseif Opcion == 2
+                Vpcal_r =...
+                    INVtikhonov(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, Dv, sigma);
         end                     
     case 'No'
+        if Opcion == 1
             Vpcal = INVn(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, Dv, sigma, F1, F3);
+        elseif Opcion == 2
+            %Hayq ue modificar esta rutina para que lea el nuevo modelo
+            %inicial
+            Vpcal_r =...
+                INVtikhonov(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, Dv, sigma);
+        end
 end
+
+
+
+
+
