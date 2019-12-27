@@ -36,7 +36,7 @@ Opcion = input([' + + + + + + + Tipo de Inversion + + + + + + + +'...
 if Opcion == 1
     disp ('Inversion por Minimo Cuadrado Estandar')
 elseif Opcion == 2
-    disp('Inversi?n por Regularizacion de Tikhonov')
+    disp('Inversion por Regularizacion de Tikhonov')
 end
 
   anss = questdlg('      Proceder con la Inversion?', ...
