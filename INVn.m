@@ -13,7 +13,7 @@ while(opc==2)
 %         Vp = A.*finv.^(-B); 
 
       disp('Defina la Vp; considere V0 + Dv*exp((-f^2)/sigma)')    
-      disp(['Anterior ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
+      disp(['Anterior ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'Sigma=',num2str(sigma)])
    disp(' ')
    V0 = input('   V0 = '); 
    Dv = input('   Dv = ');                          %Expresion que define la forma de 
@@ -21,7 +21,6 @@ sigma = input('Sigma = ');
    Vp = V0 + Dv*exp((-finv.^2)./sigma);
  TPSDR = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
    F8 = Fig8( finv, Vp, TPSDR, r, F1, F3);
-%   F8=F3;
  opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
  while(opc ~= 1 && opc ~= 2)
 disp(' ')
@@ -33,6 +32,7 @@ opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
      continue
  else
 clc
+
  end
 end
 
@@ -52,7 +52,7 @@ bar(i,RMS)
 
            i=i+1;
     INV_ZtZ = inv(Z'*Z);
-     TPSDmc = DirectoCCA(finv,r,Xmc)';               %transpuesto solo para visualizacion
+     TPSDmc = DirectoCCA(finv,r,Xmc)';               
         Xmc = Xmc + INV_ZtZ * Z' * ( M2 - TPSDmc );
     TPSDcal = DirectoCCA(finv,r,Xmc)';
           Z = Jacobiano( finv, r, Xmc, OBS, PAR, per, TPSDcal );
@@ -78,8 +78,8 @@ pause(1.5)
 %     
 % end
 
-Residual = abs(sum(M2 - TPSDcal));
-if 0.05>Residual
+
+if 0.05>RMS
     break 
 else
     delete(FF2)
@@ -87,13 +87,13 @@ end
 legend('M_{Obs}','PSD_{0}')
 
 TPSDR=TPSDcal;
-disp(['Iteracion: ',num2str(i)])
-RMS
-Residual
+% disp(['Iteracion: ',num2str(i)])
+
+
 end
-
+disp(['Iteracion: ',num2str(i)])
 F7 = Fig7( finv, Xmc);
-
+RMS
 
 end
 

@@ -4,7 +4,7 @@ function [ Xmc, F7, F5, F6 ] = INVy(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, D
 
 
 disp(' ')
-disp('Modelo de Vp ---> V0 + Dv*exp((-f^2)/sigma)')    
+disp('Modelo de Vp  ---> V0 + Dv*exp((-f^2)/sigma)')    
 disp(['Modelo actual ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
      F5 = Fig5( finv, M2, TPSDR, r);
      F6 = Fig6;   
@@ -50,9 +50,7 @@ pause(1.5)
 % else
 %     
 % end
-disp(['Iteracion: ',num2str(i)])
-% Residual = abs(sum(M2 - TPSDcal))
-RMS
+
 if RMS <= 0.05
     break 
 else
@@ -61,12 +59,14 @@ end
 legend('M_{Obs}','PSD_{0}')
 
 TPSDR=TPSDcal;
+% disp(['Iteracion: ',num2str(i)])
+
 
 end
-
+disp(['Iteracion: ',num2str(i)])
 F7 = Fig7( finv, Xmc);
-title('Velocidad de fase por regresion lineal')
-
+RMS
 
 end
+
 

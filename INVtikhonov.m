@@ -5,8 +5,8 @@ function [ Xmc, F7, F5, F6 ] = INVtikhonov(finv, r, Vp, OBS, PAR, per, M2, TPSDR
 disp(' ')
 disp(' * * * * * REGULARIZACION DE TIKHONOV * * * * * ')
 disp(' ')
-disp('Modelo de Vp -> V0 + Dv*exp((-f^2)/sigma)')    
-disp(['Modelo actual -> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
+disp('Modelo de Vp  --> V0 + Dv*exp((-f^2)/sigma)')    
+disp(['Modelo actual --> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'sigma=',num2str(sigma)])
    F5 = Fig5( finv, M2, TPSDR, r );
    F6 = Fig6;   
   Xmc = Vp';
@@ -17,7 +17,7 @@ disp(['Modelo actual -> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' '
             disp(' ')
             disp('Define alfa para la regularizacion')
             disp('alfa muy pequenio --> Minimo cuadrado')
-            disp('alfa grande --------> Sobreamortiguamiento')
+            disp('alfa grande --------> Sobre amortiguamiento')
             disp('alfa medio ---------> Regularizado')
             alfa = input('alfa = ');
             disp(' ')
@@ -43,9 +43,9 @@ while(RMS > 0.05)
     legend('M_{Obs}','PSD_{0}',strcat('PSD_{iter:', num2str(i),'}'))
 %     pause(1.5)
 
-    disp(['Iteracion: ',num2str(i)])
+%     disp(['Iteracion: ',num2str(i)])
 %       Residual = abs(sum(M2 - TPSDcal));
-      RMS
+      
     if RMS<=0.05
         break 
     else
@@ -57,9 +57,9 @@ while(RMS > 0.05)
       Xmc = Vp_reg;
 
 end
-    F7 = Fig7( finv, Vp_reg);
-    title('Velocidad de fase regularizada')
-     
+disp(['Iteracion: ',num2str(i)])
+F7 = Fig7( finv, Vp_reg);
+RMS
      
 end
 
