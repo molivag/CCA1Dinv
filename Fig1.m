@@ -6,11 +6,11 @@ function [ F1] = Fig1(f, M )
 
 % % % % % % % % % % % GRAFICAS DE LA FUNCION DirectoCCA.m % % % % % % % % % % % % %
 figure('name','Datos observados y Modelo Inicial')
-F1 = subplot(4,4,[1 4]);
+F1 = subplot(3,7,1:7);
  loglog(f,M,'b'); grid on
 title('Funcion M: Datos Observados','FontSize', 12,'interpreter','latex')
 xlabel('Frecuencia (Hz)','FontSize', 11,'interpreter','latex')
 y=ylabel('$ M \left[rk(w) \right]$','FontSize', 11,'Rotation',90,'interpreter','latex');
-set(y, 'Units', 'Normalized', 'Position', [-0.05, 0.5, 0])
+set(y, 'Units', 'Normalized', 'Position', [-0.04, 0.5, 0])
 
 end
