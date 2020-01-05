@@ -1,7 +1,7 @@
 function [ Xmc, F7, F5, F6 ] = INVy(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, Dv, sigma)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-
+format shortg
 
 disp(' ')
 disp('Modelo de Vp  ---> V0 + Dv*exp((-f^2)/sigma)')    
@@ -22,8 +22,6 @@ hold on
 bar(i,RMS)
 set(gca, 'XLim', [0.5, i+.5], 'XTick', 1:1:i)
 
-
-           
     INV_ZtZ = inv(Z'*Z);
      TPSDmc = DirectoCCA(finv,r,Xmc)';               %transpuesto solo para visualizacion
         Xmc = Xmc + INV_ZtZ * Z' * ( M2 - TPSDmc );
@@ -33,7 +31,7 @@ figure(2);
 hold on
 FF2 = loglog(finv,TPSDcal,'--r','LineWidth',1);
 legend('M_{Obs}','PSD_{0}',strcat('PSD_{iter:', num2str(i),'}'))
-pause(1.5)
+pause(1)
 
 % Determinante=det(Z'*Z);
 % DVS_ZtZ=svd(Z'*Z);
@@ -65,8 +63,8 @@ TPSDR=TPSDcal;
 end
 disp(['Iteracion: ',num2str(i)])
 F7 = Fig7( finv, Xmc);
-RMS
-
+RMS=RMS*100;
+disp(['RMS = ',num2str(RMS),'%'])
 end
 
 

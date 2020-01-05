@@ -1,10 +1,10 @@
-function [ F8 ] = Fig8( finv, Vp, TPSDR, r, F1, F3)
+function [ F8 ] = Fig8( finv, Vp, TPSDR, r, F1)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
-
+F8 = subplot(3,7,[12:14 19:21]);
 hold on
-delete(F3)
+delete(F8)
 F8 = subplot(3,7,[12:14 19:21]);
 semilogx(finv,Vp,'+k','LineWidth',1);grid on;
 title('Velocidad de fase $\nu_p$ inicial','FontSize', 12,'interpreter','latex')

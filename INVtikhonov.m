@@ -41,7 +41,7 @@ while(RMS > 0.05)
     hold on
            FF2 = loglog(finv,TPSDcal,'--k','LineWidth',1);
     legend('M_{Obs}','PSD_{0}',strcat('PSD_{iter:', num2str(i),'}'))
-%     pause(1.5)
+     pause(0.5)
 
 %     disp(['Iteracion: ',num2str(i)])
 %       Residual = abs(sum(M2 - TPSDcal));
@@ -59,8 +59,8 @@ while(RMS > 0.05)
 end
 disp(['Iteracion: ',num2str(i)])
 F7 = Fig7( finv, Vp_reg);
-RMS
-     
+RMS=RMS*100;
+disp(['RMS = ',num2str(RMS),'%'])   
 end
 
 

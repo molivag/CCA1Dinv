@@ -3,35 +3,32 @@ function [ Xmc, F7, F5, F6 ] = INVn(finv, r, Vp, OBS, PAR, per, M2, TPSDR, V0, D
 %   Detailed explanation goes here
 
           opc=2;
+          disp(' ')
+          disp('- - - - - - - - - Modelo Inicial - - - - - - - - ')
+          disp(' ')
+          disp('Defina la Vp; considere V0 + Dv*exp((-f^2)/sigma)')    
+    disp(['Modelo actual ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'Sigma=',num2str(sigma)])
 while(opc==2)
-      disp(' ')
-%       disp('Defina la Vp; considere A.*finv.^(-B)')    
-%       disp(['Anterior ---> A=',num2str(A),' ' ';' ' ' 'B=',num2str(B)])
-%         disp(' ')
-%          A = input('A = '); 
-%          B = input('B = ');                          %Expresion que define la forma de 
-%         Vp = A.*finv.^(-B); 
-
-      disp('Defina la Vp; considere V0 + Dv*exp((-f^2)/sigma)')    
-      disp(['Anterior ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'Sigma=',num2str(sigma)])
+%       disp(' ')
+%       disp('Defina la Vp; considere V0 + Dv*exp((-f^2)/sigma)')    
+%        disp(['Modelo actual ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'Sigma=',num2str(sigma)])
    disp(' ')
    V0 = input('   V0 = '); 
    Dv = input('   Dv = ');                          %Expresion que define la forma de 
 sigma = input('Sigma = ');
    Vp = V0 + Dv*exp((-finv.^2)./sigma);
  TPSDR = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
-   F8 = Fig8( finv, Vp, TPSDR, r, F1, F3);
- opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
+   F8 = Fig8( finv, Vp, TPSDR, r, F1);
+ opc = input('El modelo incial es correcto 1(Si), 2(No): ');
  while(opc ~= 1 && opc ~= 2)
 disp(' ')
 disp('Error, solo se reconoce la opcion 1 y 2. Intente de nuevo') 
-opc = input('El modelo inciail es correcto 1(Si), 2(No): ');
+opc = input('El modelo incial es correcto 1(Si), 2(No): ');
  end
  
  if opc == 1
      continue
  else
-clc
 
  end
 end
@@ -45,12 +42,13 @@ Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSDR );
 disp(' ')
 pause(2)
 while(RMS>0.05)
-RMS = sqrt(sum((M2 - TPSDR).^2)/length(M2));
+          i = i+1;
+        RMS = sqrt(sum((M2 - TPSDR).^2)/length(M2));
 figure(3)
 hold on
-bar(i,RMS)   
+bar(i,RMS)
+set(gca, 'XLim', [0.5, i+.5], 'XTick', 1:1:i)
 
-           i=i+1;
     INV_ZtZ = inv(Z'*Z);
      TPSDmc = DirectoCCA(finv,r,Xmc)';               
         Xmc = Xmc + INV_ZtZ * Z' * ( M2 - TPSDmc );
@@ -60,7 +58,7 @@ figure(2);
 hold on
 FF2 = loglog(finv,TPSDcal,'--r','LineWidth',1);
 legend('M_{Obs}','PSD_{0}',strcat('PSD_{iter:', num2str(i),'}'))
-pause(1.5)
+pause(1)
 
 % Determinante=det(Z'*Z);
 % DVS_ZtZ=svd(Z'*Z);
@@ -93,7 +91,8 @@ TPSDR=TPSDcal;
 end
 disp(['Iteracion: ',num2str(i)])
 F7 = Fig7( finv, Xmc);
-RMS
+RMS=RMS*100;
+disp(['RMS = ',num2str(RMS),'%'])
 
 end
 
