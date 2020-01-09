@@ -1,4 +1,4 @@
-function [ F3, Opcion, anss] = Fig3( finv, Vp, TPSDR, r, F1, F2)
+function [ F3, Opcion] = Fig3( finv, Vp, TPSDR, r, F1, F2,V0,Dv,sigma)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -25,7 +25,49 @@ set(y, 'Units', 'Normalized', 'Position', [-0.11, 0.4, 0])
 linkaxes([F1,F2,F4],'xy')
 
 
+anss = questdlg('      ?Corregir el Modelo Directo? ', ...
+'Proceso Completado','Yes','No','No');
 
+
+switch anss
+    case 'Yes'
+
+  opc=2;
+          disp(' ')
+          disp('- - - - - - - - - Modelo Inicial - - - - - - - - ')
+          disp(' ')
+          disp('Defina la Vp; considere V0 + Dv*exp((-f^2)/sigma)')    
+    disp(['Modelo actual ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'Sigma=',num2str(sigma)])
+while(opc==2)
+%       disp(' ')
+%       disp('Defina la Vp; considere V0 + Dv*exp((-f^2)/sigma)')    
+%        disp(['Modelo actual ---> V0=',num2str(V0),' ' ';' ' ' 'Dv=',num2str(Dv),' ' ';' ' ' 'Sigma=',num2str(sigma)])
+   disp(' ')
+   V0 = input('   V0 = '); 
+   Dv = input('   Dv = ');                          %Expresion que define la forma de 
+sigma = input('Sigma = ');
+   Vp = V0 + Dv*exp((-finv.^2)./sigma);
+ TPSDR = DirectoCCA(finv,r,Vp)';               %transpuesto solo para visualizacion
+   F8 = Fig8( finv, Vp, TPSDR, r, F1);
+ opc = input('El modelo incial es correcto 1(Si), 2(No): ');
+ while(opc ~= 1 && opc ~= 2)
+disp(' ')
+disp('Error, solo se reconoce la opcion 1 y 2. Intente de nuevo') 
+opc = input('El modelo incial es correcto 1(Si), 2(No): ');
+ end
+ 
+ if opc == 1
+     continue
+ else
+
+ end
+end
+   
+    case 'No'
+       
+end
+
+disp(' ')
 Opcion = input([' + + + + + + + Tipo de Inversion + + + + + + + +'...
 '\n +                                             + ',...
 '\n + - - - 1.- Minimo Cuadrado Estandar: - - - - + ',...
@@ -39,8 +81,8 @@ elseif Opcion == 2
     disp('Inversion por Regularizacion de Tikhonov')
 end
 
-  anss = questdlg('      Proceder con la Inversion?', ...
-'Proceso Completado','Yes','No','No');
+
+
 
 end
 
