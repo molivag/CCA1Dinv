@@ -10,7 +10,7 @@ switch Opcion
     RMS = 1; 
 Z = Jacobiano( finv, r, Vp, OBS, PAR, per, TPSDR );
 disp(' ')
-pause(2)
+pause(1)
 while(RMS>0.05)
           i = i+1;
         RMS = sqrt(sum((M2 - TPSDR).^2)/length(M2));
@@ -28,7 +28,7 @@ figure(2);
 hold on
 FF2 = loglog(finv,TPSDcal,'--r','LineWidth',1);
 legend('M_{Obs}','PSD_{0}',strcat('PSD_{iter:', num2str(i),'}'))
-pause(1)
+pause(0.5)
 
 % Determinante=det(Z'*Z);
 % DVS_ZtZ=svd(Z'*Z);
@@ -62,7 +62,7 @@ disp(['Iteracion: ',num2str(i)])
 F7 = Fig7( finv, Xmc);
 RMS=RMS*100;
 disp(['RMS = ',num2str(RMS),'%'])
-                    
+VpCal = Xmc         
     case 2
       
         
@@ -121,6 +121,7 @@ F7 = Fig7( finv, Vp_reg);
 RMS=RMS*100;
 disp(['RMS = ',num2str(RMS),'%']) 
         
+VpCal = Xmc
 end
 
 
