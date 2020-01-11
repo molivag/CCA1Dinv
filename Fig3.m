@@ -25,7 +25,7 @@ set(y, 'Units', 'Normalized', 'Position', [-0.11, 0.4, 0])
 linkaxes([F1,F2,F4],'xy')
 
 
-anss = questdlg('      ?Corregir el Modelo Directo? ', ...
+anss = questdlg('      Corregir el Modelo Directo? ', ...
 'Proceso Completado','Yes','No','No');
 
 
